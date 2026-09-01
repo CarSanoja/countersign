@@ -21,7 +21,7 @@ from typing import Any
 
 from autocurricula.tools.base import ToolResult
 
-from countersign.agents.capability_gate import CapabilityDenial, denial, gate
+from countersign.agents.capability_gate import CapabilityDenial, gate
 from countersign.fleet.capabilities import CountersignCapability
 from countersign.fleet.roster import ENVELOPE_PREPARER_ID, FLEET
 from countersign.tools.foxit_esign import foxit_prepare_envelope
@@ -135,20 +135,17 @@ class EnvelopePreparer:
         return gate(self.agent_id, tool, self.held)
 
     async def _refused_by_transport(self, folder_id: Any) -> CapabilityDenial:
-        """Reached only if the gate is misconfigured. The transport refuses too."""
-        _, error = await self._dispatch("POST", DISPATCH_PATH, {"folderId": folder_id})
-        if error is None:
-            raise SignatureBreach(
-                f"the gate granted {SIGNATURE_TOOL} and {DISPATCH_PATH} answered for folder "
-                f"{folder_id}: the envelope may have been dispatched. Check it by hand"
-            )
-        return denial(
-            self.agent_id,
-            SIGNATURE_TOOL,
-            CountersignCapability.SIGNATURE_EXECUTE,
-            TRANSPORT,
-            error,
-            True,
+        """Reached only if the gate is misconfigured, which is already the failure.
+
+        An earlier version proved the transport would refuse by POSTing to the
+        dispatch path and raising only if the call succeeded — a defence that
+        performed the act it defends against. Had Foxit accepted, the envelope
+        would have gone out and the exception would have arrived too late.
+        Holding the power is the breach, so this raises without a request.
+        """
+        raise SignatureBreach(
+            f"the gate granted {SIGNATURE_TOOL} for folder {folder_id}: no agent in this "
+            f"fleet may hold {CountersignCapability.SIGNATURE_EXECUTE}. Nothing was sent"
         )
 
 

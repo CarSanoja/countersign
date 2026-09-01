@@ -22,6 +22,26 @@ through the UI:
 The schema endpoint is per column type: `POST /table/{id}/schema` returns 404,
 `POST /table/{id}/schema/type/text` is the real path.
 
+## Endpoints built in Xano, not just tables
+
+An API group and its endpoints were created through the Metadata API, and their
+logic is XanoScript running in Xano — not Python calling a table:
+
+    POST /workspace/1/apigroup                     api group "countersign"
+    POST /workspace/1/apigroup/3/api               endpoints
+    PUT  /workspace/1/apigroup/3/api/{id}          Content-Type: text/x-xanoscript
+
+`GET /api:eQsko3uv/vendor?legal_name=` runs a `db.get`, a `precondition` that
+returns a 404 with a written reason when no assessment is on file, and projects
+six fields rather than the whole row. Verified live:
+
+    {"legal_name":"Name.com, Inc.","official_domain":"name.com", ...}
+
+Honest scope: the fleet writes through the Metadata API with an admin token,
+because writes happen inside a capability-gated run and the gate is the control
+that matters there. The read surface is the part a person or another service
+touches, and that is a real Xano endpoint.
+
 ## Why the audit log lives here
 
 Every decision the capability gate makes — allowed or denied — is a row:

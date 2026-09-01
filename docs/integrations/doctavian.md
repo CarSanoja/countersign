@@ -1,11 +1,22 @@
 # Doctavian — Generate It Right. Sign It Tight.
 
-## Status: integrated, unconfigured
+## Status: credentialed on the demo environment
 
-The tool module is written and the pipeline calls it. The generation stage is
-skipped at runtime because Doctavian requires an **enterprise Microsoft or
-Google account** — personal accounts are not supported — and one was not
-provisioned in time. The stage records itself as skipped and the run continues.
+Doctavian provisioned a hackathon account ("Team Carlos") on their demo
+environment:
+
+    base URL   demo.api.doctavian.com
+    auth       x-api-key header, plus a bearer from the self-service portal
+    limits     10 MB per upload, 1000 generations and signings
+
+The api-key alone is accepted — an unauthenticated call now fails with
+`Authorization header is missing` rather than `ApiKeyInvalid`, which confirms
+the gateway validates the key before the bearer. The bearer is issued from
+https://demo.portal.doctavian.com/self-service/developers and there is no
+programmatic path to it on the demo environment: `/v1/common/service/token`,
+`/public/v1/auth/token` and `/v1/common/client/token` all return
+`OperationNotFound`, which settles the contradiction in the published
+documentation about that last one.
 
 ## What it generates
 

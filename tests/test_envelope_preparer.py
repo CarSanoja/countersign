@@ -13,7 +13,6 @@ from countersign.agents.envelope_preparer import (
     DISPATCH_PATH,
     PREPARE_TOOL,
     SIGNATURE_TOOL,
-    TRANSPORT,
     EnvelopePreparer,
     SignatureBreach,
 )
@@ -127,16 +126,30 @@ def test_an_unmapped_tool_fails_closed():
     assert denial.capability is None
 
 
-async def test_the_transport_refuses_even_if_the_gate_is_misconfigured(monkeypatch):
+async def test_a_misconfigured_gate_raises_before_anything_is_sent(monkeypatch):
+    """The breach is the grant, not the dispatch.
+
+    An earlier version proved the transport would refuse by POSTing to the
+    dispatch path and raising only if the call succeeded, which meant a
+    permissive Foxit would have sent the envelope before the exception arrived.
+    Holding the power is already the failure, so it raises without a request.
+    """
+    sent: list[str] = []
+
+    async def record(method: str, path: str, *_: Any, **__: Any):
+        sent.append(path)
+        return None, "should never be reached"
+
     monkeypatch.setattr(
         "countersign.agents.capability_gate.agent_holds", lambda capability: True
     )
     preparer = EnvelopePreparer()
     preparer.held = frozenset({"envelope.prepare", "signature.execute"})
-    denials = await preparer.attempt_signature(987654)
-    assert len(denials) == 1
-    assert denials[0].denied_by == TRANSPORT
-    assert "envelope.prepare" in denials[0].reason
+    monkeypatch.setattr(preparer, "_dispatch", record)
+
+    with pytest.raises(SignatureBreach):
+        await preparer.attempt_signature(987654)
+    assert sent == [], "a request was made while refusing to make one"
 
 
 async def test_a_transport_that_answers_instead_of_refusing_is_a_breach(monkeypatch):
