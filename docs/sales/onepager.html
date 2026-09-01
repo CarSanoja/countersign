@@ -1,0 +1,130 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Helvetica, Arial, sans-serif; color: #16202B; font-size: 8.6pt; line-height: 1.42; }
+.sheet { width: 210mm; height: 297mm; padding: 13mm 14mm 10mm; display: flex; flex-direction: column; }
+
+.top { display: flex; justify-content: space-between; align-items: flex-end;
+       border-bottom: 2.2pt solid #16202B; padding-bottom: 5mm; }
+.brand { font-family: Georgia, serif; font-size: 27pt; letter-spacing: -0.7pt; font-weight: bold; }
+.brand span { color: #93242A; }
+.kicker { font-size: 7.4pt; letter-spacing: 1.5pt; text-transform: uppercase; color: #6B7684; margin-top: 1.5mm; }
+.who { text-align: right; font-size: 7.6pt; color: #4E5A69; line-height: 1.5; }
+
+.lede { font-family: Georgia, serif; font-size: 14.5pt; line-height: 1.34; margin: 6mm 0 5mm; max-width: 155mm; }
+.lede b { color: #93242A; }
+
+.band { display: flex; gap: 0; border: 0.8pt solid #C7CFD8; margin-bottom: 5mm; }
+.stat { flex: 1; padding: 3.4mm 3mm; border-right: 0.8pt solid #C7CFD8; }
+.stat:last-child { border-right: none; }
+.stat .n { font-family: Georgia, serif; font-size: 14pt; font-weight: bold; letter-spacing: -0.3pt; }
+.stat .n.red { color: #93242A; }
+.stat .l { font-size: 6.9pt; color: #4E5A69; line-height: 1.35; margin-top: 0.8mm; }
+.stat .s { font-size: 6.1pt; color: #8A94A0; margin-top: 0.6mm; }
+
+h2 { font-size: 7.4pt; letter-spacing: 1.4pt; text-transform: uppercase; color: #6B7684;
+     border-bottom: 0.6pt solid #DCE2E8; padding-bottom: 1.4mm; margin-bottom: 3mm; }
+
+.cols { display: flex; gap: 7mm; }
+.col { flex: 1; }
+
+.step { display: flex; gap: 2.6mm; margin-bottom: 2.6mm; }
+.step .i { font-family: Georgia, serif; font-size: 10pt; color: #93242A; font-weight: bold;
+           min-width: 5mm; line-height: 1.1; }
+.step .t b { display: block; font-size: 8.4pt; margin-bottom: 0.4mm; }
+.step .t span { color: #4E5A69; }
+
+.boundary { border: 1pt solid #93242A; padding: 4mm 4.5mm; margin: 4mm 0 0; background: #FBF6F6; }
+.boundary h3 { font-family: Georgia, serif; font-size: 11.5pt; margin-bottom: 2mm; }
+.boundary p { color: #3C4753; margin-bottom: 2.5mm; }
+.mono { font-family: 'Courier New', monospace; font-size: 7.4pt; background: #16202B; color: #F4F6F8;
+        padding: 2.2mm 3mm; letter-spacing: -0.1pt; }
+.mono .d { color: #FF9AA0; }
+
+table { width: 100%; border-collapse: collapse; font-size: 7.8pt; }
+td { padding: 1.5mm 0; border-bottom: 0.5pt solid #E6EAEE; vertical-align: top; }
+td.k { color: #4E5A69; padding-right: 3mm; }
+td.v { text-align: right; font-weight: bold; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+
+.foot { margin-top: auto; border-top: 0.8pt solid #C7CFD8; padding-top: 3.5mm;
+        display: flex; justify-content: space-between; align-items: flex-end; font-size: 7.2pt; color: #6B7684; }
+.foot b { color: #16202B; font-size: 8pt; }
+.pill { display: inline-block; border: 0.6pt solid #14655F; color: #14655F; padding: 0.6mm 2mm;
+        font-size: 6.6pt; letter-spacing: 0.5pt; text-transform: uppercase; margin-left: 2mm; }
+</style></head><body><div class="sheet">
+
+<div class="top">
+  <div>
+    <div class="brand">COUNTER<span>SIGN</span></div>
+    <div class="kicker">Vendor onboarding · payment fraud control</div>
+  </div>
+  <div class="who">
+    Built by <b>Quanta</b><br>
+    somosquanta.com<br>
+    csanoja@somosquanta.com
+  </div>
+</div>
+
+<p class="lede">An agent does the whole vendor onboarding and contract file, and is
+<b>structurally unable to sign it or pay it</b>. Your team keeps the decision, and
+for the first time gets an auditable record of what was actually checked.</p>
+
+<div class="band">
+  <div class="stat"><div class="n red">$3.05B</div><div class="l">lost to business email compromise in 2025</div><div class="s">FBI IC3, #2 crime type by loss</div></div>
+  <div class="stat"><div class="n red">74%</div><div class="l">of organisations hit by BEC last year</div><div class="s">AFP Payments Fraud Survey</div></div>
+  <div class="stat"><div class="n">$123,005</div><div class="l">median loss per incident</div><div class="s">24,768 reported cases</div></div>
+  <div class="stat"><div class="n">57%</div><div class="l">of chased funds the FBI recovers — and only within hours</div><div class="s">Recovery Asset Team, 2025</div></div>
+</div>
+
+<div class="cols">
+  <div class="col">
+    <h2>What breaks today</h2>
+    <p style="color:#3C4753;margin-bottom:3.5mm">An invoice arrives from a domain one character off the real one, saying the
+    bank account changed. The control that should stop it is a person in accounts payable looking at a PDF for
+    four minutes. Nobody compares the sender domain to the vendor's real one, the change of bank details travels
+    by the same email channel already compromised, and no record survives of what was checked.</p>
+
+    <h2>What COUNTERSIGN does</h2>
+    <div class="step"><div class="i">1</div><div class="t"><b>Reads the document, deterministically</b><span>Every field keeps the page and the box it came from. A value it cannot anchor is returned absent, never invented. Account numbers are masked before any model sees them.</span></div></div>
+    <div class="step"><div class="i">2</div><div class="t"><b>Verifies the counterparty against live data</b><span>Is this the same legal entity, or a namesake? Is the coverage adverse? Is the invoiced address a business or a mail drop?</span></div></div>
+    <div class="step"><div class="i">3</div><div class="t"><b>Sweeps the domain space</b><span>Forty confusable variants across eight attack classes, checked against the live registry. Which are already registered, and is the sender one of them?</span></div></div>
+    <div class="step"><div class="i">4</div><div class="t"><b>Hands a person one decision</b><span>A verdict where every claim links to the source it rests on, and a signature envelope prepared and waiting.</span></div></div>
+  </div>
+
+  <div class="col">
+    <h2>Why this is not another AI tool</h2>
+    <div class="boundary">
+      <h3>The agent asks to sign. Every run. It is refused. Every run.</h3>
+      <p>Signing and releasing payment are not powers withheld by an instruction the model could talk its way around. They are capabilities no agent in the system holds, checked in code, and the refusal is written to an append-only log rather than hidden.</p>
+      <div class="mono">seq=5&nbsp; envelope-preparer<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foxit_execute_signature &nbsp;<span class="d">DENY</span></div>
+      <p style="margin-top:2.5mm;margin-bottom:0;font-size:7.7pt">A tool that is not declared resolves to no capability and is denied by default. The build fails if anyone ever grants an agent the power to sign.</p>
+    </div>
+
+    <h2 style="margin-top:5mm">Measured, not asserted</h2>
+    <table>
+      <tr><td class="k">Verdict accuracy on labelled invoices</td><td class="v">6 / 6</td></tr>
+      <tr><td class="k">Same invoice, same verdict, every time</td><td class="v">6 / 6</td></tr>
+      <tr><td class="k">Claims carrying a verifiable source</td><td class="v">100%</td></tr>
+      <tr><td class="k">Fabricated citation rejected</td><td class="v">yes</td></tr>
+      <tr><td class="k">Signature requested and refused</td><td class="v">12 / 12</td></tr>
+      <tr><td class="k">Time per assessment</td><td class="v">39s</td></tr>
+      <tr><td class="k">Cost per assessment</td><td class="v">~$0.15</td></tr>
+    </table>
+    <p style="font-size:6.9pt;color:#8A94A0;margin-top:2mm">Against four minutes of a person's time, at roughly $22.50 per verification event.</p>
+  </div>
+</div>
+
+<div class="boundary" style="border-color:#C7CFD8;background:#F7F8FA;margin-top:5mm">
+  <div class="cols" style="gap:7mm">
+    <div class="col"><b style="font-size:8.4pt">Where it sits</b><br><span style="color:#4E5A69">Between the invoice arriving and the payment run. No change to your ERP: documents in, a dossier and a prepared envelope out. Deploys to your own cloud; your documents never train anything.</span></div>
+    <div class="col"><b style="font-size:8.4pt">What it costs to be wrong once</b><br><span style="color:#4E5A69">$123,005 at the median, of which the FBI recovers just over half, and only if someone notices the same day. The check costs fifteen cents.</span></div>
+  </div>
+</div>
+
+<div class="foot">
+  <div><b>Ask for a run against your own last ten invoices.</b><br>We return the dossiers, the audit trail, and what we would have held.</div>
+  <div style="text-align:right">csanoja@somosquanta.com<span class="pill">Human-in-the-loop by construction</span></div>
+</div>
+
+</div></body></html>
