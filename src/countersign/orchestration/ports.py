@@ -141,14 +141,19 @@ async def live_generate(
     Doctavian is the intended generator and the one its challenge asks for, but
     it needs both an api key and a bearer, and half a credential is worse than
     none: routing to it with only the key fails at the template rather than at
-    the door. Foxit PDF Services covers the same reversible work with credentials
-    already in hand, so the stage still produces the document a person signs.
+    the door. It also only accepts docx and xlsx, so an html template is not a
+    question it can be asked — checking the extension routes on what the provider
+    can actually do rather than on whether we hold its credentials.
+
+    Foxit PDF Services covers the same reversible work and takes html, so the
+    stage still produces the document a person signs.
     """
-    doctavian_ready = os.environ.get("DOCTAVIAN_API_KEY", "").strip() and (
+    credentialed = os.environ.get("DOCTAVIAN_API_KEY", "").strip() and (
         os.environ.get("DOCTAVIAN_ACCESS_TOKEN", "").strip()
         or os.environ.get("DOCTAVIAN_SERVICE_TOKEN", "").strip()
     )
-    if doctavian_ready:
+    generatable = template_path.lower().endswith((".docx", ".xlsx"))
+    if credentialed and generatable:
         return await doctavian_generate_document(
             template_path=template_path, data=data, document_name=document_name
         )
