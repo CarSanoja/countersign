@@ -36,6 +36,25 @@ def _api_key() -> str | None:
     return os.environ.get(SERPAPI_API_KEY_ENV, "").strip() or None
 
 
+_EMPTY_RESULT_MARKERS = (
+    "hasn't returned any results",
+    "has not returned any results",
+    "no results found",
+    "returned no results",
+)
+
+
+def _is_empty_result(reported: str) -> bool:
+    """SerpApi reports "no results" through the error field.
+
+    A search that legitimately finds nothing is an answer, not a failure: for
+    adverse media, finding nothing is the good outcome, and treating it as an
+    error degrades the stage and skews the verdict.
+    """
+    lowered = reported.lower()
+    return any(marker in lowered for marker in _EMPTY_RESULT_MARKERS)
+
+
 def _redact(text: str, key: str) -> str:
     return text.replace(key, "[redacted]")
 
@@ -89,5 +108,7 @@ def _document_from(response: httpx.Response, path: str, key: str) -> ToolResult:
         )
     reported = document.get("error")
     if isinstance(reported, str) and reported.strip():
+        if _is_empty_result(reported):
+            return ToolResult.success({"document": {}, "empty": True, "reason": reported})
         return ToolResult.failure(f"serpapi rejected the search: {_redact(reported, key)}")
     return ToolResult.success({"document": document})

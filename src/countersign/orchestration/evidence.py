@@ -7,13 +7,16 @@ each stage's output is reduced to that, and anything without retrieved text is
 left out rather than padded with a restatement of the claim it supports.
 """
 
+from autocurricula.schemas.common import utc_now
+
 from countersign.agents.counterparty_verifier import CounterpartyAssessment
 from countersign.agents.document_extractor import ExtractedInvoice
 from countersign.agents.document_extractor_fields import InvoiceField
 from countersign.agents.risk_evidence import EvidenceBundle, EvidenceChannel, EvidenceItem
+from countersign.agents.risk_weights import SIGNAL_WEIGHTS
 from countersign.orchestration.domain_sweep import DomainSweep
-from countersign.schemas.evidence import Provider, SourceRef
-from countersign.schemas.verdict import SignalKind
+from countersign.schemas.evidence import Claim, Provider, SourceRef
+from countersign.schemas.verdict import RiskSignal, SignalKind
 
 OCCUPIED = (
     "{name} is a {kind} variant of {official} and is already registered; the "
@@ -94,6 +97,35 @@ def sweep_items(sweep: DomainSweep) -> list[EvidenceItem]:
     return items
 
 
+def _established_signals(sweep: DomainSweep, at: str) -> list[RiskSignal]:
+    """Turn the registry's settled facts into signals the model cannot drop."""
+    statements = sweep.established_claims()
+    signals: list[RiskSignal] = []
+    for kind in sweep.established_signals():
+        statement = statements.get(kind)
+        if statement is None:
+            continue
+        signals.append(
+            RiskSignal(
+                kind=kind,
+                weight=SIGNAL_WEIGHTS[kind],
+                claim=Claim(
+                    statement=statement,
+                    sources=[
+                        SourceRef(
+                            provider=Provider.NAMECOM,
+                            locator=sweep.sender_domain or sweep.official_domain,
+                            snippet=f"checkAvailability against {sweep.environment}",
+                            retrieved_at=sweep.swept_at or at,
+                        )
+                    ],
+                    confidence=1.0,
+                ),
+            )
+        )
+    return signals
+
+
 def build_bundle(
     run_id: str,
     subject: str,
@@ -109,9 +141,11 @@ def build_bundle(
     if assessment is not None and assessment.usable_for_verdict:
         items.extend(verification_items(assessment))
     required: list[SignalKind] = []
+    established: list[RiskSignal] = []
     if sweep is not None:
         items.extend(sweep_items(sweep))
         required = sweep.established_signals()
+        established = _established_signals(sweep, utc_now().isoformat())
     if not items:
         return None
     return EvidenceBundle(
@@ -119,6 +153,7 @@ def build_bundle(
         subject=subject,
         items=items,
         required_signals=[kind for kind in required if _backed(kind, items)],
+        established_signals=established,
     )
 
 

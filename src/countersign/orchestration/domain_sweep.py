@@ -59,11 +59,31 @@ class DomainSweep(StrictBaseModel):
     def established_signals(self) -> list[SignalKind]:
         """The kinds the registry settled without anyone having to judge them."""
         signals: list[SignalKind] = []
+        if self.sender_domain and self.sender_domain != self.official_domain:
+            signals.append(SignalKind.SENDER_DOMAIN_NOT_OFFICIAL)
         if self.occupied_high_risk:
             signals.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
         if self.sender_registered is False:
             signals.append(SignalKind.SENDER_DOMAIN_UNREGISTERED)
         return signals
+
+    def established_claims(self) -> dict[SignalKind, str]:
+        """What each settled kind actually asserts, in words a person can check."""
+        held = len(self.occupied_high_risk)
+        return {
+            SignalKind.SENDER_DOMAIN_NOT_OFFICIAL: (
+                f"The invoice was sent from {self.sender_domain}, which is not "
+                f"{self.official_domain}, the vendor's official domain."
+            ),
+            SignalKind.CONFUSABLE_ALREADY_REGISTERED: (
+                f"{held} confusable variant(s) of {self.official_domain} are already "
+                f"registered, so the impersonation surface is occupied."
+            ),
+            SignalKind.SENDER_DOMAIN_UNREGISTERED: (
+                f"{self.sender_domain} is not registered with any registrar, so the "
+                f"invoice claims an address nobody owns."
+            ),
+        }
 
 
 async def sweep_lookalikes(

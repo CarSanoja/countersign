@@ -109,6 +109,20 @@ async def synthesize_verdict(
     raise UngroundedVerdictError(bundle.run_id, attempts, reason, failures, raw)
 
 
+def _merge_established(
+    bundle: EvidenceBundle, drafted: list[RiskSignal]
+) -> list[RiskSignal]:
+    """Settled signals win; the model may only add kinds it did not settle.
+
+    The model is asked to reason, not to re-decide a string comparison. Letting
+    its draft silently drop an established signal is what made the same invoice
+    score differently between runs.
+    """
+    established = {signal.kind: signal for signal in bundle.established_signals}
+    additions = [signal for signal in drafted if signal.kind not in established]
+    return list(established.values()) + additions
+
+
 def assemble_verdict(
     draft: DraftVerdict,
     bundle: EvidenceBundle,
@@ -129,7 +143,7 @@ def assemble_verdict(
             "; ".join(failure.as_line() for failure in failures),
             failures,
         )
-    signals = _signals_from(draft, bundle)
+    signals = _merge_established(bundle, _signals_from(draft, bundle))
     level = level_for(score_of(signal.kind for signal in signals))
     return Verdict(
         run_id=bundle.run_id,

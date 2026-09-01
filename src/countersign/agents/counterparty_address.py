@@ -65,6 +65,8 @@ def address_findings(
     )
     if call.matches_entity and call.is_real_business and not call.is_mail_drop:
         return [claim], [], errors
+    if not _is_adverse(call, place):
+        return [claim], [], errors
     base = MAIL_DROP_WEIGHT if call.is_mail_drop else ADDRESS_UNMATCHED_WEIGHT
     signal = RiskSignal(
         kind=SignalKind.ADDRESS_NOT_A_BUSINESS,
@@ -72,6 +74,20 @@ def address_findings(
         claim=claim,
     )
     return [claim], [signal], errors
+
+
+def _is_adverse(call: AddressJudgement, place: object | None) -> bool:
+    """Absence of a map listing is not evidence the premises are fake.
+
+    Plenty of real companies have no Maps entry, and a vendor whose own site
+    states the invoiced address is corroborated by another channel. So the
+    signal needs something positive: a mail drop, or a listing that shows some
+    other business trading there. "Maps found nothing" leaves the question open
+    and must not push the verdict.
+    """
+    if call.is_mail_drop:
+        return True
+    return place is not None
 
 
 def _statement(legal_name: str, address: str, call: AddressJudgement) -> str:

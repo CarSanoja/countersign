@@ -13,7 +13,7 @@ from autocurricula.schemas.common import StrictBaseModel
 from pydantic import Field, model_validator
 
 from countersign.schemas.evidence import Provider, SourceRef
-from countersign.schemas.verdict import SignalKind
+from countersign.schemas.verdict import RiskSignal, SignalKind
 
 
 class EvidenceChannel(StrEnum):
@@ -60,6 +60,14 @@ class EvidenceBundle(StrictBaseModel):
     subject: str = Field(min_length=1)
     items: list[EvidenceItem] = Field(min_length=1)
     required_signals: list[SignalKind] = Field(default_factory=list)
+    established_signals: list[RiskSignal] = Field(default_factory=list)
+    """Signals already settled deterministically upstream.
+
+    A sender domain that differs from the official one is a string comparison,
+    not a judgement. Leaving it for the model to re-derive from prose is how the
+    same invoice scored HIGH on one run and REVIEW on the next, so these are
+    carried through and take precedence over the model's version of the same
+    kind."""
 
     @model_validator(mode="after")
     def _ids_are_unique(self):
