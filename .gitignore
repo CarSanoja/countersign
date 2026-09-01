@@ -1,0 +1,16 @@
+# entornos
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# credenciales — nunca al repo
+.env
+.env.local
+.gcloud/
+docs/CLAVES.md
+
+# sistema
+.DS_Store
