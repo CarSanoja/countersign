@@ -1,0 +1,146 @@
+"""Turning three stages of output into the one index a verdict may cite.
+
+The synthesiser never receives prose. It receives items addressable by id whose
+text is the material that was actually retrieved, so a citation the model
+invents cannot resolve and the grounding check can say no. This module is where
+each stage's output is reduced to that, and anything without retrieved text is
+left out rather than padded with a restatement of the claim it supports.
+"""
+
+from countersign.agents.counterparty_verifier import CounterpartyAssessment
+from countersign.agents.document_extractor import ExtractedInvoice
+from countersign.agents.document_extractor_fields import InvoiceField
+from countersign.agents.risk_evidence import EvidenceBundle, EvidenceChannel, EvidenceItem
+from countersign.orchestration.domain_sweep import DomainSweep
+from countersign.schemas.evidence import Provider, SourceRef
+from countersign.schemas.verdict import SignalKind
+
+OCCUPIED = (
+    "{name} is a {kind} variant of {official} and is already registered; the "
+    "registry reports it is not available, so that surface is occupied. Who holds "
+    "it is not answered by an availability check."
+)
+SENDER_FREE = (
+    "{sender} is the domain the invoice was sent from and it is not registered "
+    "in the {environment} registry."
+)
+
+
+def extraction_items(invoice: ExtractedInvoice) -> list[EvidenceItem]:
+    """One item per anchored field, quoting the page span it was read from."""
+    items: list[EvidenceItem] = []
+    for name in InvoiceField:
+        field = invoice.field(name)
+        if field is None or not field.source.snippet.strip():
+            continue
+        items.append(
+            EvidenceItem(
+                evidence_id=f"D{len(items) + 1}",
+                channel=EvidenceChannel.EXTRACTION,
+                text=field.source.snippet,
+                source=field.source,
+            )
+        )
+    return items
+
+
+def verification_items(assessment: CounterpartyAssessment) -> list[EvidenceItem]:
+    """One item per distinct retrieved snippet the verifier relied on."""
+    claims = [*assessment.claims, *[signal.claim for signal in assessment.signals]]
+    seen: set[tuple[str, str, str]] = set()
+    items: list[EvidenceItem] = []
+    for claim in claims:
+        for source in claim.sources:
+            key = (source.provider.value, source.locator, source.snippet.strip())
+            if not source.snippet.strip() or key in seen:
+                continue
+            seen.add(key)
+            items.append(
+                EvidenceItem(
+                    evidence_id=f"V{len(items) + 1}",
+                    channel=EvidenceChannel.VERIFICATION,
+                    text=source.snippet,
+                    source=source,
+                )
+            )
+    return items
+
+
+def sweep_items(sweep: DomainSweep) -> list[EvidenceItem]:
+    """The registry's answers, written out as the sentences a claim may quote."""
+    items: list[EvidenceItem] = []
+    for finding in sweep.occupied_high_risk:
+        items.append(
+            EvidenceItem(
+                evidence_id=f"S{len(items) + 1}",
+                channel=EvidenceChannel.DOMAIN_SWEEP,
+                text=OCCUPIED.format(
+                    name=finding.domain_name, kind=finding.kind, official=sweep.official_domain
+                ),
+                source=_namecom_source(finding.domain_name, sweep.swept_at),
+            )
+        )
+    if sweep.sender_registered is False and sweep.sender_domain:
+        items.append(
+            EvidenceItem(
+                evidence_id=f"S{len(items) + 1}",
+                channel=EvidenceChannel.DOMAIN_SWEEP,
+                text=SENDER_FREE.format(
+                    sender=sweep.sender_domain, environment=sweep.environment
+                ),
+                source=_namecom_source(sweep.sender_domain, sweep.swept_at),
+            )
+        )
+    return items
+
+
+def build_bundle(
+    run_id: str,
+    subject: str,
+    *,
+    invoice: ExtractedInvoice | None = None,
+    assessment: CounterpartyAssessment | None = None,
+    sweep: DomainSweep | None = None,
+) -> EvidenceBundle | None:
+    """Assemble the index, or None when no stage produced anything citable."""
+    items: list[EvidenceItem] = []
+    if invoice is not None:
+        items.extend(extraction_items(invoice))
+    if assessment is not None and assessment.usable_for_verdict:
+        items.extend(verification_items(assessment))
+    required: list[SignalKind] = []
+    if sweep is not None:
+        items.extend(sweep_items(sweep))
+        required = sweep.established_signals()
+    if not items:
+        return None
+    return EvidenceBundle(
+        run_id=run_id,
+        subject=subject,
+        items=items,
+        required_signals=[kind for kind in required if _backed(kind, items)],
+    )
+
+
+def _backed(kind: SignalKind, items: list[EvidenceItem]) -> bool:
+    """Never demand a signal the index cannot support; that is unfalsifiable."""
+    sweep_texts = [item for item in items if item.channel == EvidenceChannel.DOMAIN_SWEEP]
+    if kind is SignalKind.CONFUSABLE_ALREADY_REGISTERED:
+        return any("already registered" in item.text for item in sweep_texts)
+    if kind is SignalKind.SENDER_DOMAIN_UNREGISTERED:
+        return any("is not registered" in item.text for item in sweep_texts)
+    return False
+
+
+def _namecom_source(domain_name: str, at: str) -> SourceRef:
+    return SourceRef(
+        provider=Provider.NAMECOM, locator=domain_name, snippet="", retrieved_at=at
+    )
+
+
+__all__ = [
+    "build_bundle",
+    "extraction_items",
+    "sweep_items",
+    "verification_items",
+]
