@@ -1,0 +1,609 @@
+<title>El caso Countersign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --paper: #EDEFF2;
+    --surface: #F7F8FA;
+    --sunk: #E3E7EB;
+    --ink: #141C26;
+    --ink-2: #4E5A69;
+    --ink-3: #77828F;
+    --rule: #C7CFD8;
+    --rule-soft: #DCE2E8;
+    --seal: #93242A;
+    --seal-soft: #F0DEDE;
+    --verify: #14655F;
+    --verify-soft: #D8E7E5;
+    --amber: #8A5A08;
+    --amber-soft: #F2E4CC;
+    --measure: 66ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0E1319;
+      --surface: #161C24;
+      --sunk: #1C242D;
+      --ink: #E2E8EE;
+      --ink-2: #A2AEBB;
+      --ink-3: #7A8794;
+      --rule: #2C3742;
+      --rule-soft: #222B34;
+      --seal: #E0888C;
+      --seal-soft: #33191B;
+      --verify: #6FBDB4;
+      --verify-soft: #14282A;
+      --amber: #D5A45C;
+      --amber-soft: #2B2214;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0E1319;
+    --surface: #161C24;
+    --sunk: #1C242D;
+    --ink: #E2E8EE;
+    --ink-2: #A2AEBB;
+    --ink-3: #7A8794;
+    --rule: #2C3742;
+    --rule-soft: #222B34;
+    --seal: #E0888C;
+    --seal-soft: #33191B;
+    --verify: #6FBDB4;
+    --verify-soft: #14282A;
+    --amber: #D5A45C;
+    --amber-soft: #2B2214;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    margin: 0;
+    padding: 0 24px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 78ch; margin: 0 auto; }
+
+  .masthead {
+    padding: 72px 0 40px;
+    border-bottom: 2px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  h1 {
+    font-family: Spectral, Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(38px, 6vw, 58px);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .standfirst {
+    font-family: Spectral, Georgia, serif;
+    font-size: clamp(18px, 2.4vw, 21px);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: var(--measure);
+    margin: 0;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+
+  section { padding-top: 56px; }
+
+  h2 {
+    font-family: Spectral, Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(26px, 3.4vw, 33px);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.005em;
+    margin: 34px 0 8px;
+  }
+
+  .sec-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--seal);
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  p { max-width: var(--measure); margin: 0 0 18px; }
+
+  a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--seal); }
+  a:focus-visible { outline: 2px solid var(--seal); outline-offset: 3px; border-radius: 2px; }
+
+  strong { font-weight: 600; }
+
+  .lead { font-size: 17.5px; }
+
+  ul, ol { max-width: var(--measure); padding-left: 20px; margin: 0 0 18px; }
+  li { margin-bottom: 9px; }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 30px 0;
+  }
+
+  .fig { background: var(--surface); padding: 20px 18px 18px; display: flex; flex-direction: column; gap: 5px; }
+
+  .fig-val {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  .fig-val.seal { color: var(--seal); }
+  .fig-lab { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); }
+  .fig-src { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em; margin-top: 2px; }
+
+  .scroll { overflow-x: auto; margin: 26px 0; border: 1px solid var(--rule); }
+
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--surface); }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  thead th {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tfoot td { border-top: 1px solid var(--rule); font-weight: 600; background: var(--sunk); }
+
+  .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .tag.hi { color: var(--verify); }
+  .tag.mid { color: var(--amber); }
+  .tag.lo { color: var(--seal); }
+
+  .dg-seal-s { stroke: var(--seal); }
+  .dg-seal-f { fill: var(--seal); }
+
+  figure { margin: 34px 0; }
+  figure svg { display: block; width: 100%; max-width: 100%; height: auto; }
+  figcaption { font-size: 13px; color: var(--ink-2); max-width: var(--measure); margin-top: 14px; line-height: 1.5; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--seal);
+    padding: 22px 24px;
+    margin: 30px 0;
+  }
+  .panel h3 { margin-top: 0; }
+  .panel p:last-child, .panel ul:last-child { margin-bottom: 0; }
+
+  .panel.quiet { border-left-color: var(--rule); }
+
+  code, .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.88em;
+    background: var(--sunk);
+    padding: 1px 5px;
+  }
+
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 26px 0;
+  }
+  .cap { background: var(--surface); padding: 18px 20px; }
+  .cap-head {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cap.allow .cap-head { color: var(--verify); }
+  .cap.deny .cap-head { color: var(--seal); }
+  .cap ul { list-style: none; padding: 0; margin: 0; }
+  .cap li { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; margin-bottom: 6px; }
+  .cap.deny li { color: var(--seal); }
+
+  .sources { font-size: 13.5px; }
+  .sources ol { max-width: none; }
+  .sources li { margin-bottom: 11px; color: var(--ink-2); }
+
+  hr { border: none; border-top: 1px solid var(--rule); margin: 0; }
+
+  @media (max-width: 620px) {
+    body { padding: 0 18px 64px; }
+    .masthead { padding-top: 48px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <span class="eyebrow">Caso de negocio · v1</span>
+    <h1>El caso Countersign</h1>
+    <p class="standfirst">Un agente que hace todo el papeleo de alta de proveedores y es estructuralmente incapaz de firmar o de pagar. El problema que ataca movió $3.046 millones en pérdidas declaradas en 2025.</p>
+    <div class="meta">
+      <span>31 ago 2026</span>
+      <span>DevNetwork [API + Cloud + AI] Hackathon 2026</span>
+      <span>Cierre: 3 sep, 10:00 PDT</span>
+    </div>
+  </header>
+
+  <section>
+    <span class="sec-num">01</span>
+    <h2>El problema</h2>
+    <p class="lead">Business Email Compromise —BEC— es la estafa en la que alguien se hace pasar por un proveedor o un directivo por correo y consigue que finanzas pague a una cuenta que no es la del proveedor. El vector casi siempre es el mismo: un dominio que se parece al real.</p>
+
+    <p>No es un problema de nicho ni una amenaza emergente. Es la segunda categoría de delito por pérdidas declaradas al FBI, solo por detrás del fraude de inversión, y lleva tres años consecutivos por encima de los 2.700 millones de dólares.</p>
+
+    <div class="figures">
+      <div class="fig">
+        <span class="fig-val seal">$3.046.598.558</span>
+        <span class="fig-lab">Pérdidas por BEC declaradas en 2025</span>
+        <span class="fig-src">FBI IC3 2025</span>
+      </div>
+      <div class="fig">
+        <span class="fig-val">24.768</span>
+        <span class="fig-lab">Denuncias por BEC en 2025</span>
+        <span class="fig-src">FBI IC3 2025</span>
+      </div>
+      <div class="fig">
+        <span class="fig-val">$123.005</span>
+        <span class="fig-lab">Pérdida media por incidente</span>
+        <span class="fig-src">Derivado de IC3 2025</span>
+      </div>
+      <div class="fig">
+        <span class="fig-val">74%</span>
+        <span class="fig-lab">De las organizaciones sufrieron BEC en 2025</span>
+        <span class="fig-src">AFP Payments Fraud Survey</span>
+      </div>
+    </div>
+
+    <h3>El dinero no vuelve</h3>
+    <p>El FBI mantiene un equipo de recuperación —el Recovery Asset Team— que activa la <em>Financial Fraud Kill Chain</em> para congelar transferencias fraudulentas. En 2025 intervino en 3.900 incidentes sobre 1.200 millones de dólares en pérdidas potenciales y logró congelar <strong>$679.013.183</strong>. Es una tasa de éxito del 57%, y solo funciona si la víctima detecta el fraude en cuestión de horas.</p>
+    <p>Dicho de otro modo: incluso con la mejor intervención disponible, cerca de la mitad del dinero se pierde. Y esa mitad depende de que alguien se dé cuenta el mismo día.</p>
+
+    <h3>El terreno ya está minado</h3>
+    <p>La suplantación por dominio confundible no es hipotética; está preposicionada. Un análisis de ThreatLabz sobre las webs más visitadas encontró <strong>28.212 dominios lookalike ya registrados</strong> apuntando a un puñado de marcas grandes, y en algunas hasta el 13% de las variantes posibles estaban tomadas. De los más de 30.000 dominios similares que examinaron, más de 10.000 eran maliciosos. La OMPI gestionó 6.200 disputas de dominio en 2025, récord histórico y un 68% más que en 2020.</p>
+    <p>Y el coste de fabricar el señuelo se está desplomando. El propio informe del IC3 recoge más de <strong>$30 millones</strong> en pérdidas por BEC con componente de IA declaradas en 2025 — la primera vez que lo desglosa.</p>
+  </section>
+
+  <section>
+    <span class="sec-num">02</span>
+    <h2>Por qué falla el control que existe hoy</h2>
+    <p>El control que debería detener esto no es técnico. Es una persona de finanzas mirando un PDF durante cuatro minutos, con el logo correcto delante y un correo que dice que el proveedor ha cambiado de banco.</p>
+
+    <p>Ese control falla por tres razones concretas, y ninguna se arregla con más formación:</p>
+
+    <ul>
+      <li><strong>Nadie compara el dominio remitente contra el dominio oficial.</strong> Requiere saber cuál es el oficial, y eso exige una búsqueda que nadie hace bajo presión de cierre de mes.</li>
+      <li><strong>El cambio de datos bancarios es el momento de máximo riesgo y el peor instrumentado.</strong> Suele resolverse por el mismo canal —correo— que ya está comprometido.</li>
+      <li><strong>La verificación no deja rastro.</strong> Si después hay fraude, no existe registro de qué se comprobó ni con qué fuente, así que no hay ni auditoría ni aprendizaje.</li>
+    </ul>
+
+    <p>Encima, ese proceso manual cuesta dinero por sí mismo. Ardent Partners sitúa el coste medio de procesar una factura en $9,40, con los procesos predominantemente manuales entre <strong>$12,88 y $19,83</strong>; los datos de APQC ponen la mediana alrededor de $15 y a los peores por encima de $30.</p>
+  </section>
+
+  <section>
+    <span class="sec-num">03</span>
+    <h2>La solución</h2>
+    <p class="lead">Countersign convierte esos cuatro minutos de criterio humano en cuarenta segundos de verificación reproducible — y deja la decisión donde debe estar.</p>
+
+    <p>Arrastras el PDF de la factura y el contrato. El agente ejecuta cinco etapas y se detiene en seco antes de la sexta:</p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Etapa</th><th>Qué hace</th><th>Proveedor</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Ingesta</td><td>Extracción determinista de entidad, dirección, IBAN, total y dominio remitente, con coordenadas de página. La PII se redacta antes de que el modelo vea nada.</td><td class="num">Nutrient DWS</td></tr>
+          <tr><td class="num">2</td><td>Identidad</td><td>¿Existe la empresa? ¿Cuál es su sitio oficial? ¿La dirección es una oficina o un buzón? ¿Hay litigios o insolvencia en prensa?</td><td class="num">SerpApi</td></tr>
+          <tr><td class="num">3</td><td>Dominio</td><td>Barrido de 40 variantes confundibles del dominio real en 8 clases de ataque. Cuáles están ya registradas por terceros.</td><td class="num">name.com</td></tr>
+          <tr><td class="num">4</td><td>Riesgo</td><td>Funde las señales en un veredicto donde cada afirmación enlaza con su fuente.</td><td class="num">—</td></tr>
+          <tr><td class="num">5</td><td>Generación</td><td>Produce el documento correcto: una verificación bancaria fuera de banda, no el pago.</td><td class="num">Doctavian</td></tr>
+          <tr><td class="num">6</td><td>Entrega</td><td>Prepara el sobre de firma y <strong>se detiene</strong>. La firma la ejecuta una persona.</td><td class="num">Foxit eSign</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>El caso que se enseña en el demo</h3>
+    <p>Factura #4471 de «Acme Corp» por $84.000, con nota de cambio de banco. El dominio remitente es <code>acrnecorp.com</code>. El oficial es <code>acmecorp.com</code>. <strong><code>rn</code> no es <code>m</code></strong> — a 11 píxeles nadie ve la diferencia, y el barrido encuentra además otras tres variantes del dominio real ya registradas por terceros.</p>
+    <p>Veredicto: riesgo alto. Motivo: dominio remitente distinto del oficial y confundible por homoglifo, más un cambio de datos bancarios sin verificación fuera de banda. El agente no paga y no firma.</p>
+  </section>
+
+  <section>
+    <span class="sec-num">04</span>
+    <h2>El coste ahorrado</h2>
+    <p>Cualquier modelo de ahorro aquí depende de supuestos, así que los declaro todos y quedan a la vista para que se puedan discutir uno a uno. Empresa de referencia: <strong>400 proveedores activos, 5.000 facturas al año</strong>.</p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Concepto</th><th>Supuesto</th><th>Anual</th><th>Confianza</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Eventos que exigen verificación real</td>
+            <td>400 altas + 200 cambios de datos bancarios</td>
+            <td class="num">600</td>
+            <td><span class="tag mid">supuesto</span></td>
+          </tr>
+          <tr>
+            <td>Verificación manual seria</td>
+            <td>30 min × $45/h cargado</td>
+            <td class="num">$13.500</td>
+            <td><span class="tag mid">supuesto</span></td>
+          </tr>
+          <tr>
+            <td>Revisión del dossier con Countersign</td>
+            <td>2 min × $45/h</td>
+            <td class="num">$900</td>
+            <td><span class="tag mid">supuesto</span></td>
+          </tr>
+          <tr>
+            <td>Coste de API por evento</td>
+            <td>extracción + búsquedas + barrido ≈ $0,15</td>
+            <td class="num">$90</td>
+            <td><span class="tag hi">medible</span></td>
+          </tr>
+          <tr>
+            <td>Probabilidad de sufrir un intento</td>
+            <td>74% de las organizaciones (AFP)</td>
+            <td class="num">0,74</td>
+            <td><span class="tag hi">dato</span></td>
+          </tr>
+          <tr>
+            <td>Intentos que llegan a pago</td>
+            <td>1 de cada 10</td>
+            <td class="num">0,074</td>
+            <td><span class="tag lo">estimación</span></td>
+          </tr>
+          <tr>
+            <td>Pérdida esperada por fraude</td>
+            <td>0,074 × $123.005</td>
+            <td class="num">$9.102</td>
+            <td><span class="tag mid">derivado</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">Ahorro operativo bruto, antes de fraude evitado</td>
+            <td class="num">$12.510</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>El argumento que no depende de ningún supuesto</h3>
+      <p>El modelo de arriba es discutible en cada línea. Este otro no lo es, y es el que de verdad sostiene el caso:</p>
+      <p><strong>Ejecutar la comprobación cuesta unos $0,15. Un solo incidente que se escapa cuesta $123.005 de mediana, de los que el FBI recupera el 57% en el mejor de los casos.</strong> La asimetría es de seis órdenes de magnitud. El programa entero se paga si evita un incidente cada varios siglos.</p>
+      <p>Ninguna decisión de inversión con ese perfil se toma mirando el ROI operativo. Se toma mirando la cola.</p>
+    </div>
+
+    <p>Hay una cifra que circula mucho —que el alta manual de un proveedor cuesta más de $35.000 frente a menos de $2.500 automatizada— y que <strong>he decidido no usar</strong>: procede de material de marketing de un proveedor y no he encontrado la metodología detrás. Menciono que existe para que nadie la traiga como sorpresa.</p>
+  </section>
+
+  <section>
+    <span class="sec-num">05</span>
+    <h2>La misma arquitectura, otros dos mercados</h2>
+    <p>El esqueleto —ingesta determinista, verificación contra fuentes vivas, generación, entrega con firma humana— no es específico del fraude de proveedores. Cambia el dominio y cambia poco más que las reglas de riesgo.</p>
+
+    <h3>Alta de contratistas</h3>
+    <p>La clasificación errónea de un trabajador como autónomo se paga cara y por cabeza: California multa entre <strong>$25.000 y $100.000 por contratista</strong>, y en Alemania las sanciones arrancan en €60.000. Sobre unos ingresos de $100.000 anuales durante tres años, la deuda acumulada por cotizaciones de un solo trabajador mal clasificado ronda los <strong>$135.900</strong>, sin intereses ni recargos.</p>
+    <p>Es el mismo problema con otra cara: documentos que hay que leer bien, hechos que hay que verificar fuera del documento, y una decisión con consecuencias legales que debe tomar una persona identificable.</p>
+
+    <h3>Siniestros de seguros</h3>
+    <p>El <em>claims leakage</em> —dinero pagado de más por errores de proceso— se cita habitualmente entre el <strong>5% y el 10%</strong> de los pagos totales, subiendo al 7–14% en siniestros de responsabilidad con litigio. Conviene decir que aquí <strong>las fuentes se contradicen abiertamente</strong>: algunos análisis defienden un rango del 2–4% y otros hablan del 20–30%. La dispersión es tan grande que sospecho que miden cosas distintas, y no construiría un caso de negocio sobre esa cifra sin datos del cliente.</p>
+    <p>Lo que sí es sólido: la fuga de proceso se estima en el 10–15% de los gastos operativos de siniestros, y ahí el mecanismo de Countersign aplica directamente.</p>
+
+    <p><strong>Para el hackathon nos quedamos con proveedores.</strong> Es el que tiene las cifras más duras, el que los jueces han vivido en su propia empresa y el único de los tres donde la API de dominios es una señal de fraude de primer orden en vez de un accesorio.</p>
+  </section>
+
+  <section>
+    <span class="sec-num">06</span>
+    <h2>Arquitectura</h2>
+    <p class="lead">La afirmación central es que el agente no puede firmar. No es una instrucción en el prompt: es una lista de capacidades comprobada en código, y el intento denegado se muestra en pantalla en vez de esconderse.</p>
+
+    <figure>
+      <svg viewBox="0 0 920 300" role="img" aria-label="El agente ejecuta cinco etapas —ingesta, identidad, dominio, riesgo y generación— y entrega un dossier con un sobre preparado a través de una frontera de capacidades; sus intentos de ejecutar la firma o liberar el pago chocan contra esa frontera y quedan registrados como denegados.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path>
+          </marker>
+        </defs>
+
+        <text x="30" y="26" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="1.4" fill="currentColor" opacity="0.55">EL AGENTE</text>
+        <text x="736" y="26" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing="1.4" fill="currentColor" opacity="0.55">LA PERSONA</text>
+
+        <g stroke="currentColor" fill="none" stroke-width="1">
+          <rect x="30" y="52" width="108" height="58" opacity="0.45"></rect>
+          <rect x="162" y="52" width="108" height="58" opacity="0.45"></rect>
+          <rect x="294" y="52" width="108" height="58" opacity="0.45"></rect>
+          <rect x="426" y="52" width="108" height="58" opacity="0.45"></rect>
+          <rect x="558" y="52" width="108" height="58" opacity="0.45"></rect>
+        </g>
+
+        <g font-family="IBM Plex Sans, sans-serif" font-size="13" fill="currentColor" text-anchor="middle">
+          <text x="84" y="78">Ingesta</text>
+          <text x="216" y="78">Identidad</text>
+          <text x="348" y="78">Dominio</text>
+          <text x="480" y="78">Riesgo</text>
+          <text x="612" y="78">Generación</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.55" text-anchor="middle">
+          <text x="84" y="96">Nutrient</text>
+          <text x="216" y="96">SerpApi</text>
+          <text x="348" y="96">name.com</text>
+          <text x="480" y="96">local</text>
+          <text x="612" y="96">Doctavian</text>
+        </g>
+
+        <g stroke="currentColor" stroke-width="1.4" marker-end="url(#ar)" opacity="0.8">
+          <line x1="140" y1="81" x2="158" y2="81"></line>
+          <line x1="272" y1="81" x2="290" y2="81"></line>
+          <line x1="404" y1="81" x2="422" y2="81"></line>
+          <line x1="536" y1="81" x2="554" y2="81"></line>
+        </g>
+
+        <line class="dg-seal-s" x1="700" y1="16" x2="700" y2="284" stroke-width="1.6" stroke-dasharray="5 5"></line>
+        <text class="dg-seal-f" x="708" y="278" font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="0.8">FRONTERA DE CAPACIDADES</text>
+
+        <rect x="736" y="52" width="154" height="58" fill="none" stroke="currentColor" stroke-width="1.4"></rect>
+        <text x="813" y="78" font-family="IBM Plex Sans, sans-serif" font-size="13" fill="currentColor" text-anchor="middle">Firma humana</text>
+        <text x="813" y="96" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.55" text-anchor="middle">Foxit eSign</text>
+
+        <line x1="668" y1="81" x2="732" y2="81" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar)"></line>
+        <text x="700" y="44" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.7" text-anchor="middle">dossier + sobre</text>
+
+        <path class="dg-seal-s" d="M 612 118 L 612 176 L 688 176" fill="none" stroke-width="1.4"></path>
+        <g class="dg-seal-s" stroke-width="1.8">
+          <line x1="692" y1="168" x2="708" y2="184"></line>
+          <line x1="708" y1="168" x2="692" y2="184"></line>
+        </g>
+        <text class="dg-seal-f" x="612" y="204" font-family="IBM Plex Mono, monospace" font-size="10.5">execute_signature · release_payment → denegado</text>
+        <text x="612" y="222" font-family="IBM Plex Sans, sans-serif" font-size="11.5" fill="currentColor" opacity="0.65">el intento queda en la traza, no se oculta</text>
+
+        <path d="M 30 176 L 30 240 L 880 240" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 4" opacity="0.4"></path>
+        <text x="36" y="258" font-family="IBM Plex Mono, monospace" font-size="10" fill="currentColor" opacity="0.55">traza de auditoría · procedencia por afirmación</text>
+      </svg>
+      <figcaption>El sobre de firma cruza la frontera; la capacidad de firmarlo no. La frontera no es un aviso en el prompt sino una comprobación en <code>src/agent/policy.ts</code>: cinco etapas producen un dossier, y los dos verbos con consecuencias legales viven al otro lado.</figcaption>
+    </figure>
+
+    <div class="cap-grid">
+      <div class="cap allow">
+        <div class="cap-head">Capacidades del agente</div>
+        <ul>
+          <li>read_document</li>
+          <li>call_external_api</li>
+          <li>generate_document</li>
+          <li>prepare_envelope</li>
+        </ul>
+      </div>
+      <div class="cap deny">
+        <div class="cap-head">Reservadas a una persona</div>
+        <ul>
+          <li>execute_signature</li>
+          <li>release_payment</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Por qué esto es el estado del arte y no una precaución cosmética</h3>
+    <p>El OWASP Top 10 para aplicaciones LLM de 2025 amplió considerablemente la entrada de <em>Excessive Agency</em>, y la descompone en tres causas raíz. La arquitectura responde a las tres por separado:</p>
+
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Causa raíz (OWASP 2025)</th><th>Respuesta en Countersign</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Funcionalidad excesiva — el agente alcanza herramientas fuera de su tarea</td><td>El conjunto de capacidades está enumerado explícitamente, no derivado de las herramientas disponibles.</td></tr>
+          <tr><td>Permisos excesivos — las herramientas operan con más privilegio del necesario</td><td>Las credenciales que ejecutan la firma pertenecen a otro principal. El agente no las tiene, así que no puede usarlas mal.</td></tr>
+          <tr><td>Autonomía excesiva — acciones de alto impacto sin humano en el bucle</td><td>Los dos verbos irreversibles exigen aprobación humana por construcción, no por configuración.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Las otras cuatro decisiones que la sostienen</h3>
+    <ul>
+      <li><strong>Extracción determinista antes del modelo.</strong> Los campos salen con coordenadas de página, no de una alucinación plausible. El mismo PDF da los mismos campos, que es lo que convierte una comprobación en auditable. La PII se redacta antes de que el LLM la vea.</li>
+      <li><strong>Señales vivas, no memoria del modelo.</strong> Ningún modelo puede saber si un dominio se registró la semana pasada. Esa pregunta se hace a name.com y a SerpApi en el momento de decidir.</li>
+      <li><strong>Procedencia por afirmación.</strong> Cada dato del dossier lleva proveedor, localizador, página y fragmento. Un dossier sin fuentes no es una opinión débil: es un dossier inválido.</li>
+      <li><strong>La traza es producto, no log.</strong> El paso denegado se renderiza. Es la única forma de demostrarle a un auditor que el límite existe y funciona.</li>
+    </ul>
+
+    <div class="panel quiet">
+      <h3>Degradación por proveedor</h3>
+      <p>Cada integración declara sus variables de entorno. Si faltan, ese proveedor corre en modo <code>fixture</code> y el resto del pipeline sigue. Con seis proveedores y tres días, esto significa que una credencial que no llegue tumba una etapa, nunca el demo.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="sec-num">07</span>
+    <h2>Dónde puede fallar esto</h2>
+    <p>Tres objeciones que se sostienen, dichas antes de que las diga un juez.</p>
+
+    <h3>El sandbox de name.com no es el mundo real</h3>
+    <p>El entorno de pruebas tiene su propio registro de dominios, así que preguntar ahí por <code>acrnecorp.com</code> no dice nada sobre quién lo posee de verdad. Un juez de name.com lo detecta en dos segundos. La salida es usar <strong>producción para el barrido de disponibilidad</strong> —son lecturas, no cuestan nada— y reservar el sandbox para el registro defensivo. Si no se hace así, la señal es teatro.</p>
+
+    <h3>Seis APIs pueden parecer seis APIs pegadas con cinta</h3>
+    <p>Cada juez mira solo la suya. La defensa real no es afirmar que el pipeline es coherente, sino <strong>demostrar en el video que quitar cualquier etapa rompe el producto</strong>: sin extracción determinista no hay dossier auditable, sin señal de dominio no hay detección, sin frontera no hay garantía.</p>
+
+    <h3>El fraude del demo lo fabricamos nosotros</h3>
+    <p>Si huele a guion, se cae entero. Hay que enseñar el barrido corriendo en vivo contra dominios reales — sin señalar a ninguna empresa real como defraudadora.</p>
+  </section>
+
+  <section class="sources">
+    <span class="sec-num">08</span>
+    <h2>Fuentes</h2>
+    <ol>
+      <li>FBI Internet Crime Complaint Center, <a href="https://www.ic3.gov/AnnualReport/Reports/2025_IC3Report.pdf">2025 Internet Crime Report</a>. Cifras de BEC, denuncias y Financial Fraud Kill Chain extraídas del PDF original, no de resúmenes de terceros.</li>
+      <li>Association for Financial Professionals, <a href="https://www.financialprofessionals.org/training-resources/resources/survey-research-economic-data/details/payments-fraud">Payments Fraud and Control Survey</a> (datos de 2025): 74% de organizaciones afectadas por BEC.</li>
+      <li>Zscaler ThreatLabz, <a href="https://www.zscaler.com/blogs/security-research/phishing-typosquatting-and-brand-impersonation-trends-and-tactics">Phishing, Typosquatting and Brand Impersonation</a>: 28.212 dominios lookalike registrados; más de 10.000 maliciosos sobre 30.000 analizados.</li>
+      <li>Ardent Partners, <em>Accounts Payable Metrics That Matter in 2025</em>, y benchmarks de APQC para el coste por factura.</li>
+      <li>OWASP, <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf">Top 10 for LLM Applications 2025</a>, entrada <em>Excessive Agency</em>.</li>
+      <li>Datos de clasificación de contratistas y de <em>claims leakage</em>: recopilados de fuentes secundarias y marcados en el texto con su nivel de confianza. Las cifras de leakage se contradicen entre sí y se presentan como rango en disputa, no como dato.</li>
+    </ol>
+  </section>
+
+</div>
