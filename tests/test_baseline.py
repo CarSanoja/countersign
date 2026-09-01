@@ -11,7 +11,6 @@ import pytest
 from countersign.agents.document_extractor import ExtractedField, ExtractedInvoice
 from countersign.orchestration.baseline import (
     SALT_ENV,
-    UNKNOWN_BASELINE_WEIGHT,
     BaselineUnavailable,
     VendorBaseline,
     bank_fingerprint,
@@ -214,14 +213,17 @@ def test_announcing_a_change_to_the_account_already_on_file_is_not_a_signal():
     assert bank_signal(loud, baseline, AT) is None
 
 
-def test_a_vendor_with_no_file_gets_the_weaker_answer_and_says_it_does_not_know():
-    signal = bank_signal(invoice_paying(REDIRECTED), None, AT)
-    assert signal is not None
-    assert signal.weight == pytest.approx(UNKNOWN_BASELINE_WEIGHT)
-    assert signal.weight < 0.45
-    assert "nothing to compare" in signal.claim.statement
-    assert [source.provider for source in signal.claim.sources] == [Provider.NUTRIENT]
+def test_a_vendor_with_no_file_raises_nothing_at_all():
+    """Absence of a file is context, not a finding.
 
+    Scoring it even weakly took the soak's false positive rate from 49% to 81%,
+    because every first invoice from every supplier carries it. Not knowing is
+    not evidence of a redirection, and a control that fires on every new
+    supplier is one that gets switched off. The absence stays visible in the
+    vendor row; it simply does not score.
+    """
+    invoice = invoice_paying("ES91 2100 0418 4502 0005 1332", announced=True)
+    assert bank_signal(invoice, None, AT) is None
 
 def test_an_invoice_that_prints_no_account_says_nothing_about_accounts():
     without = ExtractedInvoice(document_path="x.pdf", extracted_at=AT, page_count=1)

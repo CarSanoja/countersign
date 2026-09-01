@@ -46,10 +46,13 @@ MISMATCH: Final[str] = (
     "{seen}, the vendor row holds {known}. The document did not have to announce a "
     "change for this to be one."
 )
-NO_FILE: Final[str] = (
-    "No earlier account is on file for {name}, so there is nothing to compare this one "
-    "against. That is a missing record, not evidence of a redirection: the account "
-    "printed on this invoice is simply the first one seen for this supplier."
+NO_FILE_IS_NOT_A_FINDING: Final[str] = (
+    "A supplier with no file yet raises nothing at all. Measured over the soak "
+    "corpus, scoring the absence even weakly took the false positive rate from "
+    "49% to 81%, because every first invoice from every supplier carries it. "
+    "Not knowing is not evidence of a redirection, and a control that fires on "
+    "every new supplier is a control that gets switched off. The absence is "
+    "still visible in the vendor row; it simply does not score."
 )
 
 
@@ -114,12 +117,7 @@ def bank_signal(
     except (ValueError, xano.MissingCredential):
         return None
     if baseline is None:
-        return _signal(
-            NO_FILE.format(name=_subject(invoice)),
-            UNKNOWN_BASELINE_WEIGHT,
-            [account.source],
-            0.5,
-        )
+        return None
     if hmac.compare_digest(seen, baseline.fingerprint):
         return None
     statement = MISMATCH.format(

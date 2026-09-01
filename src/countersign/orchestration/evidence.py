@@ -14,6 +14,7 @@ from countersign.agents.document_extractor import ExtractedInvoice
 from countersign.agents.document_extractor_fields import InvoiceField
 from countersign.agents.risk_evidence import EvidenceBundle, EvidenceChannel, EvidenceItem
 from countersign.agents.risk_weights import SIGNAL_WEIGHTS
+from countersign.domain.relation import classify
 from countersign.orchestration.baseline import (
     VendorBaseline,
     bank_signal,
@@ -124,14 +125,28 @@ def _official_source(assessment: CounterpartyAssessment | None) -> SourceRef | N
     return None
 
 
+def _same_registrant(sweep: DomainSweep) -> bool:
+    """Whether the sender belongs to the vendor, not whether the strings match.
+
+    An exact comparison treated invoices.name.com as a stranger, so the standing
+    brand exposure was scored against every legitimate billing subdomain. In the
+    soak that was most of a 49% false positive rate, and a control that flags
+    half of all real invoices gets switched off.
+    """
+    if not sweep.sender_domain:
+        return False
+    relation = getattr(sweep, "relation", None)
+    if relation is not None and hasattr(relation, "same_registrant"):
+        return bool(relation.same_registrant)
+    return classify(sweep.sender_domain, sweep.official_domain).same_registrant
+
+
 def _established_signals(
     sweep: DomainSweep, at: str, official_source: SourceRef | None = None
 ) -> list[RiskSignal]:
     """Turn the registry's settled facts into signals the model cannot drop."""
     statements = sweep.established_claims()
-    sender_is_official = bool(sweep.sender_domain) and (
-        sweep.sender_domain == sweep.official_domain
-    )
+    sender_is_official = _same_registrant(sweep)
     signals: list[RiskSignal] = []
     for kind in sweep.established_signals():
         if kind is SignalKind.CONFUSABLE_ALREADY_REGISTERED and sender_is_official:
