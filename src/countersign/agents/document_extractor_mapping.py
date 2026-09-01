@@ -16,6 +16,7 @@ from pydantic import Field
 from countersign.agents.document_extractor_fields import FIELD_GUIDANCE, InvoiceField
 from countersign.agents.document_extractor_layout import LayoutSpan
 from countersign.agents.document_extractor_model import TextModel
+from countersign.agents.pii_mask import mask_pii
 
 MAPPER_MODEL: Final[str] = "gemini-3.5-flash-lite"
 MAX_PROMPT_SPANS: Final[int] = 400
@@ -54,7 +55,9 @@ class SpanMapping(StrictBaseModel):
 
 def build_prompt(spans: Sequence[LayoutSpan]) -> str:
     field_lines = "\n".join(f"- {name.value}: {text}" for name, text in FIELD_GUIDANCE.items())
-    span_lines = "\n".join(f"[{span.span_id}] {span.text}" for span in spans[:MAX_PROMPT_SPANS])
+    span_lines = "\n".join(
+        f"[{span.span_id}] {mask_pii(span.text)}" for span in spans[:MAX_PROMPT_SPANS]
+    )
     return TASK.format(fields=field_lines, spans=span_lines)
 
 

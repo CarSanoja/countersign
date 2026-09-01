@@ -45,9 +45,14 @@ async def test_every_anchored_field_carries_the_region_it_was_read_from():
 
 
 async def test_a_reformatted_iban_still_anchors_to_the_span_that_prints_it():
+    """The value is the document's own formatting, because that is what is citable.
+
+    A normalised IBAN is a value nobody can point at on the page. The rule reads
+    the span verbatim so the box, the snippet and the number agree.
+    """
     invoice = await invoice_from(FAITHFUL_ANSWER)
     assert invoice.iban is not None
-    assert invoice.iban.value == "ES9121000418450200051332"
+    assert invoice.iban.value == "ES91 2100 0418 4502 0005 1332"
     assert "ES91 2100" in invoice.iban.source.snippet
 
 
@@ -59,13 +64,19 @@ async def test_two_fields_can_come_from_the_same_line():
 
 
 async def test_an_invented_value_is_absent_and_recorded_rather_than_returned():
+    """The model's invention is rejected, and the rule supplies the real value.
+
+    The model never sees account digits, so it cannot echo one back; when it
+    invents one it is dropped for not being carried by its span, and the IBAN
+    that is actually printed is read from the span instead.
+    """
     answer = json.dumps(
         {"fields": [{"field": "iban", "span_id": "p0l2", "value": "DE89370400440532013000"}]}
     )
     invoice = await invoice_from(answer)
-    assert invoice.iban is None
-    assert "iban" in invoice.missing_fields
     assert [item.claimed_value for item in invoice.dropped] == ["DE89370400440532013000"]
+    assert invoice.iban is not None
+    assert invoice.iban.value != "DE89370400440532013000"
 
 
 async def test_a_citation_to_a_span_that_does_not_exist_is_refused():
@@ -133,8 +144,16 @@ async def test_a_claim_never_outranks_the_confidence_of_the_reading():
 
 
 async def test_the_prompt_offers_spans_and_never_the_document():
+    """And never an account number either.
+
+    The mapper's job is to say which span holds which field; it needs the shape
+    of a line, not the digits. Masking them means no account identifier is ever
+    sent to a model, which is the redaction the pipeline actually depends on.
+    """
     model = FakeModel(FAITHFUL_ANSWER)
     await extract_from_layout(layout(), model)
     prompt = model.prompts[0]
-    assert "[p0l2] IBAN: ES91 2100 0418 4502 0005 1332" in prompt
+    assert "[p0l2] IBAN:" in prompt
     assert DOCUMENT not in prompt
+    assert "ES91 2100 0418 4502 0005 1332" not in prompt, "an account number reached the model"
+    assert "####" in prompt

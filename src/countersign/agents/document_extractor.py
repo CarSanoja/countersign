@@ -24,6 +24,7 @@ from countersign.agents.document_extractor_mapping import (
 )
 from countersign.agents.document_extractor_model import TextModel
 from countersign.agents.document_extractor_nutrient import DEFAULT_OCR_LANGUAGE, fetch_layout
+from countersign.agents.pii_mask import iban_in
 from countersign.agents.sender_domain import sender_domain_from
 from countersign.schemas.evidence import Claim, Provider, SourceRef
 
@@ -174,6 +175,7 @@ def assemble(
         )
     _settle_sender_domain(layout, anchored, stamp)
     _settle_bank_change(layout, anchored, stamp)
+    _settle_iban(layout, anchored, stamp)
     return ExtractedInvoice(
         document_path=layout.document_path,
         extracted_at=stamp,
@@ -205,6 +207,28 @@ def _settle_sender_domain(
         source=_source(layout, span, stamp),
         ocr_confidence=span.ocr_confidence,
     )
+
+
+def _settle_iban(
+    layout: DocumentLayout, anchored: dict[str, ExtractedField], stamp: str
+) -> None:
+    """An IBAN has a defined shape, so a regex reads it and the model never does.
+
+    The mapper sees every span with account identifiers masked, which means it
+    can point at the right line but cannot echo the digits back. Reading the
+    value here keeps the number out of the model entirely.
+    """
+    for span in layout.spans:
+        value = iban_in(span.text)
+        if value is None:
+            continue
+        anchored["iban"] = ExtractedField(
+            value=value,
+            span_id=span.span_id,
+            source=_source(layout, span, stamp),
+            ocr_confidence=span.ocr_confidence,
+        )
+        return
 
 
 def _settle_bank_change(
