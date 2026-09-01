@@ -78,6 +78,13 @@ async def test_a_citation_to_a_span_that_does_not_exist_is_refused():
 
 
 async def test_a_domain_is_anchored_as_a_host_name_not_as_a_substring():
+    """The model's substring claim is dropped, and the rule settles the real host.
+
+    acmecorp.com is not the sender here; acmecorp.com-invoices.net is, and that
+    distinction is the entire attack. The model's mapping is rejected for not
+    being carried by its span, and the deterministic pass supplies the host the
+    document actually asserts.
+    """
     body = json_content_body()
     words = body["pages"][0]["structuredText"]["words"]
     words[-2]["value"] = "billing@acmecorp.com-invoices.net"
@@ -86,8 +93,9 @@ async def test_a_domain_is_anchored_as_a_host_name_not_as_a_substring():
         {"fields": [{"field": "sender_domain", "span_id": "p0l5", "value": "acmecorp.com"}]}
     )
     invoice = await invoice_from(answer, body)
-    assert invoice.sender_domain is None
     assert invoice.dropped[0].reason.endswith("does not carry this value")
+    assert invoice.sender_domain is not None
+    assert invoice.sender_domain.value == "acmecorp.com-invoices.net"
 
 
 async def test_the_sender_domain_is_reduced_to_a_bare_host_name():

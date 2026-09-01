@@ -60,6 +60,14 @@ class EvidenceBundle(StrictBaseModel):
     subject: str = Field(min_length=1)
     items: list[EvidenceItem] = Field(min_length=1)
     required_signals: list[SignalKind] = Field(default_factory=list)
+    suppressed_signals: list[SignalKind] = Field(default_factory=list)
+    """Kinds the pipeline settled as not applicable to this document.
+
+    Standing brand exposure is the case: every well-known vendor has confusable
+    variants registered, so scoring it against an invoice that genuinely came
+    from the official domain would mark every real invoice for review. The model
+    can still read the finding in the evidence; it may not raise it as a signal.
+    """
     established_signals: list[RiskSignal] = Field(default_factory=list)
     """Signals already settled deterministically upstream.
 

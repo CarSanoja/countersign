@@ -14,6 +14,7 @@ from autocurricula.schemas.common import StrictBaseModel, utc_now
 from autocurricula.tools.base import ToolResult
 from pydantic import Field
 
+from countersign.agents.bank_change import bank_change_span
 from countersign.agents.document_extractor_fields import InvoiceField, anchor_value
 from countersign.agents.document_extractor_layout import DocumentLayout, LayoutSpan
 from countersign.agents.document_extractor_mapping import (
@@ -23,6 +24,7 @@ from countersign.agents.document_extractor_mapping import (
 )
 from countersign.agents.document_extractor_model import TextModel
 from countersign.agents.document_extractor_nutrient import DEFAULT_OCR_LANGUAGE, fetch_layout
+from countersign.agents.sender_domain import sender_domain_from
 from countersign.schemas.evidence import Claim, Provider, SourceRef
 
 ANCHORED_CONFIDENCE: Final[float] = 0.9
@@ -69,6 +71,7 @@ class ExtractedInvoice(StrictBaseModel):
     total_amount: ExtractedField | None = None
     invoice_number: ExtractedField | None = None
     sender_domain: ExtractedField | None = None
+    bank_change: ExtractedField | None = None
     dropped: list[DroppedField] = Field(default_factory=list)
 
     def field(self, name: InvoiceField) -> ExtractedField | None:
@@ -169,12 +172,57 @@ def assemble(
             source=_source(layout, span, stamp),
             ocr_confidence=span.ocr_confidence,
         )
+    _settle_sender_domain(layout, anchored, stamp)
+    _settle_bank_change(layout, anchored, stamp)
     return ExtractedInvoice(
         document_path=layout.document_path,
         extracted_at=stamp,
         page_count=len({span.page for span in layout.spans}) or len(layout.pages),
         dropped=dropped,
         **anchored,
+    )
+
+
+def _settle_sender_domain(
+    layout: DocumentLayout, anchored: dict[str, ExtractedField], stamp: str
+) -> None:
+    """The sender domain is a rule, not a judgement, so the rule wins.
+
+    Everything after the @ of an email address is a domain. Asking a model to
+    notice it meant one benchmark invoice came back with no sender at all, which
+    silently removed the single strongest signal the pipeline has.
+    """
+    settled = sender_domain_from(layout)
+    if settled is None:
+        return
+    domain, span_id = settled
+    span = layout.span(span_id)
+    if span is None:
+        return
+    anchored["sender_domain"] = ExtractedField(
+        value=domain,
+        span_id=span.span_id,
+        source=_source(layout, span, stamp),
+        ocr_confidence=span.ocr_confidence,
+    )
+
+
+def _settle_bank_change(
+    layout: DocumentLayout, anchored: dict[str, ExtractedField], stamp: str
+) -> None:
+    """A document announcing new bank details says so in words."""
+    found = bank_change_span(layout)
+    if found is None:
+        return
+    span_id, phrase = found
+    span = layout.span(span_id)
+    if span is None:
+        return
+    anchored["bank_change"] = ExtractedField(
+        value=phrase,
+        span_id=span.span_id,
+        source=_source(layout, span, stamp),
+        ocr_confidence=span.ocr_confidence,
     )
 
 

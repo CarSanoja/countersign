@@ -100,8 +100,13 @@ def sweep_items(sweep: DomainSweep) -> list[EvidenceItem]:
 def _established_signals(sweep: DomainSweep, at: str) -> list[RiskSignal]:
     """Turn the registry's settled facts into signals the model cannot drop."""
     statements = sweep.established_claims()
+    sender_is_official = bool(sweep.sender_domain) and (
+        sweep.sender_domain == sweep.official_domain
+    )
     signals: list[RiskSignal] = []
     for kind in sweep.established_signals():
+        if kind is SignalKind.CONFUSABLE_ALREADY_REGISTERED and sender_is_official:
+            continue
         statement = statements.get(kind)
         if statement is None:
             continue
@@ -136,16 +141,35 @@ def build_bundle(
 ) -> EvidenceBundle | None:
     """Assemble the index, or None when no stage produced anything citable."""
     items: list[EvidenceItem] = []
-    if invoice is not None:
-        items.extend(extraction_items(invoice))
-    if assessment is not None and assessment.usable_for_verdict:
-        items.extend(verification_items(assessment))
     required: list[SignalKind] = []
     established: list[RiskSignal] = []
+    suppressed: list[SignalKind] = []
+    if invoice is not None:
+        items.extend(extraction_items(invoice))
+        if invoice.bank_change is not None:
+            established.append(
+                RiskSignal(
+                    kind=SignalKind.BANK_DETAILS_CHANGED,
+                    weight=SIGNAL_WEIGHTS[SignalKind.BANK_DETAILS_CHANGED],
+                    claim=Claim(
+                        statement=(
+                            "The document announces new bank details "
+                            f"({invoice.bank_change.value!r}), so the account this "
+                            "invoice directs payment to is not the one on file."
+                        ),
+                        sources=[invoice.bank_change.source],
+                        confidence=1.0,
+                    ),
+                )
+            )
+    if assessment is not None and assessment.usable_for_verdict:
+        items.extend(verification_items(assessment))
     if sweep is not None:
         items.extend(sweep_items(sweep))
         required = sweep.established_signals()
-        established = _established_signals(sweep, utc_now().isoformat())
+        established.extend(_established_signals(sweep, utc_now().isoformat()))
+        if sweep.sender_domain and sweep.sender_domain == sweep.official_domain:
+            suppressed.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
     if not items:
         return None
     return EvidenceBundle(
@@ -154,6 +178,7 @@ def build_bundle(
         items=items,
         required_signals=[kind for kind in required if _backed(kind, items)],
         established_signals=established,
+        suppressed_signals=suppressed,
     )
 
 

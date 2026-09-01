@@ -58,10 +58,13 @@ class DomainSweep(StrictBaseModel):
 
     def established_signals(self) -> list[SignalKind]:
         """The kinds the registry settled without anyone having to judge them."""
+        sender_is_official = bool(self.sender_domain) and (
+            self.sender_domain == self.official_domain
+        )
         signals: list[SignalKind] = []
         if self.sender_domain and self.sender_domain != self.official_domain:
             signals.append(SignalKind.SENDER_DOMAIN_NOT_OFFICIAL)
-        if self.occupied_high_risk:
+        if self.occupied_high_risk and not sender_is_official:
             signals.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
         if self.sender_registered is False:
             signals.append(SignalKind.SENDER_DOMAIN_UNREGISTERED)

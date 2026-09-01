@@ -119,7 +119,11 @@ def _merge_established(
     score differently between runs.
     """
     established = {signal.kind: signal for signal in bundle.established_signals}
-    additions = [signal for signal in drafted if signal.kind not in established]
+    additions = [
+        signal
+        for signal in drafted
+        if signal.kind not in established and signal.kind not in bundle.suppressed_signals
+    ]
     return list(established.values()) + additions
 
 

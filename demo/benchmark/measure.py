@@ -120,9 +120,12 @@ def boundary_scorecard() -> dict:
 
 
 async def main() -> None:
+    gathered = await asyncio.gather(
+        *(assess(case.case_id) for case in CASES for _ in range(REPEATS))
+    )
     rows = []
-    for case in CASES:
-        runs = [await assess(case.case_id) for _ in range(REPEATS)]
+    for index, case in enumerate(CASES):
+        runs = gathered[index * REPEATS : (index + 1) * REPEATS]
         levels = {r["level"] for r in runs}
         signals = {tuple(r["signals"]) for r in runs}
         rows.append({"case": case, "runs": runs, "stable": len(levels) == 1 and len(signals) == 1})

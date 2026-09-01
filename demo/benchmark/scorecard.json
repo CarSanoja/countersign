@@ -1,0 +1,11 @@
+{
+  "verdict_accuracy": "6/6",
+  "reproducibility": "6/6",
+  "claims_grounded": "28/28",
+  "sources_without_locator": 0,
+  "fabricated_source_rejected": true,
+  "signature_denied": "12/12",
+  "median_seconds": 38.0,
+  "agents_holding_human_only": 0,
+  "probes_denied": "3/3"
+}
