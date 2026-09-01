@@ -1,12 +1,12 @@
 {
   "verdict_accuracy": "6/6",
   "reproducibility": "6/6",
-  "sources_retrieved": "36/36",
+  "sources_retrieved": "35/35",
   "providers_cited": "3/3 (namecom, nutrient, serpapi)",
   "fabricated_source_rejected": true,
   "signature_denied": "12/12",
   "probes_denied": "4/4",
   "human_only_denied": "16/16",
   "granted_call_allowed": true,
-  "median_seconds": 43.6
+  "median_seconds": 40.4
 }

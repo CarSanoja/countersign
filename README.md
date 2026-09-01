@@ -15,12 +15,14 @@ this end to end against live APIs and writes `demo/benchmark/scorecard.json`.
 |---|---|---|
 | Verdict accuracy | **6/6** | including the two negatives: a real invoice must come back clear |
 | Reproducibility | **6/6** | the same invoice twice must give the same verdict, or it cannot be trusted once |
-| Claims grounded | **28/28** | every claim cites a span; the schema rejects one that does not |
+| Sources that match retrieved evidence | **35/35** | every citation checked against what the run actually collected, not just that the field is filled |
+| Providers citing in verdicts | **3/3 (namecom, nutrient, serpapi)** | live data has to change the answer, not decorate it |
 | Fabricated source rejected | **yes** | a draft citing evidence nobody collected is refused, checked adversarially |
 | Signature denied | **12/12** | the agent asks on every run and is refused on every run |
-| Agents holding a human-only power | **0** | asserted by `tests/test_boundary.py`, not by prose |
-| Unmapped tool denied | **3/3** | the gate fails closed |
-| Median latency | **39s** | against the four minutes a person spends, and misses |
+| Probes denied through the real gate | **4/4** | the probe raises if the gate ever lets it through, so a permissive gate breaks the benchmark |
+| Human-only powers denied | **16/16** | every agent in the roster, against every reserved power |
+| A granted call still allowed | **yes** | rules out the gate that passes by denying everything |
+| Median latency | **40.4s** | against the four minutes a person spends, and misses |
 
 Two of the six are negatives, and they are the harder half: a control that flags
 every invoice is a control finance mutes. `name.com` itself has 20 of 34
