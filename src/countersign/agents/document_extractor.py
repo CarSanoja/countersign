@@ -24,6 +24,7 @@ from countersign.agents.document_extractor_mapping import (
 )
 from countersign.agents.document_extractor_model import TextModel
 from countersign.agents.document_extractor_nutrient import DEFAULT_OCR_LANGUAGE, fetch_layout
+from countersign.agents.injection_screen import screen_spans
 from countersign.agents.pii_mask import iban_in
 from countersign.agents.sender_domain import sender_domain_from
 from countersign.schemas.evidence import Claim, Provider, SourceRef
@@ -58,6 +59,14 @@ class ExtractedField(StrictBaseModel):
     ocr_confidence: float | None = None
 
 
+class InjectionFinding(StrictBaseModel):
+    """Text in the document that reads as an instruction to whoever parses it."""
+
+    span_id: str
+    kind: str
+    phrase: str
+
+
 class ExtractedInvoice(StrictBaseModel):
     """What the document says, restricted to what it demonstrably says."""
 
@@ -73,6 +82,7 @@ class ExtractedInvoice(StrictBaseModel):
     invoice_number: ExtractedField | None = None
     sender_domain: ExtractedField | None = None
     bank_change: ExtractedField | None = None
+    injection_findings: list[InjectionFinding] = Field(default_factory=list)
     dropped: list[DroppedField] = Field(default_factory=list)
 
     def field(self, name: InvoiceField) -> ExtractedField | None:
@@ -176,11 +186,16 @@ def assemble(
     _settle_sender_domain(layout, anchored, stamp)
     _settle_bank_change(layout, anchored, stamp)
     _settle_iban(layout, anchored, stamp)
+    findings = [
+        InjectionFinding(span_id=span_id, kind=kind, phrase=phrase)
+        for span_id, kind, phrase in screen_spans(layout)
+    ]
     return ExtractedInvoice(
         document_path=layout.document_path,
         extracted_at=stamp,
         page_count=len({span.page for span in layout.spans}) or len(layout.pages),
         dropped=dropped,
+        injection_findings=findings,
         **anchored,
     )
 

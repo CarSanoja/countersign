@@ -50,10 +50,16 @@ async def run_ingest(state: RunState) -> None:
         state.failed(Stage.INGEST, "the extractor returned a payload with no invoice in it")
         return
     state.invoice = invoice
+    screened = [
+        f"prompt injection screened: {finding.kind} in {finding.span_id} "
+        f"({finding.phrase!r})"
+        for finding in invoice.injection_findings
+    ]
     state.completed(
         Stage.INGEST,
-        f"{len(invoice.present_fields)} fields anchored, {len(invoice.missing_fields)} absent",
-        [f"{item.field} dropped: {item.reason}" for item in invoice.dropped],
+        f"{len(invoice.present_fields)} fields anchored, {len(invoice.missing_fields)} absent"
+        + (f", {len(screened)} injection finding(s)" if screened else ""),
+        [f"{item.field} dropped: {item.reason}" for item in invoice.dropped] + screened,
     )
 
 

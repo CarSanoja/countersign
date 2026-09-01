@@ -48,10 +48,20 @@ The git history is the real record; no commit was backdated.
 
 Thirteen agents, zero failures, roughly 40 minutes of wall clock.
 
-**Gemini 3.5 Flash and Flash-Lite** on Vertex are the runtime models — five of
-the seven agents call one. Two deliberately do not: the domain sentinel is
-deterministic so its signal survives an audit, and the envelope preparer is
-plumbing that must not have opinions.
+**Gemini 3.5 Flash and Flash-Lite** on Vertex are the runtime models — four of
+the seven agents call one. Three deliberately do not: the domain sentinel is
+deterministic so its signal survives an audit, the envelope preparer is plumbing
+that must not have opinions, and the injection screener stays out of a model
+because asking one whether a document is trying to manipulate a model puts the
+judgement inside the blast radius.
+
+That split moved during the build, and in one direction. Four times a fact a
+rule could settle had been handed to a model, and each time it was decided
+differently between runs or not at all: the sender domain, the bank-detail
+change, the IBAN, and the sender-versus-official comparison. The model's job
+narrowed to the two places where judgement is genuinely required — deciding
+whether a search result is the same legal entity, and writing a verdict that
+cites its evidence.
 
 ## What that bought, and what it did not
 

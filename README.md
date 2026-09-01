@@ -60,7 +60,11 @@ this end to end against live APIs.
 | Signature denied | **12/12** | the agent asks on every run and is refused on every run |
 | Agents holding a human-only power | **0** | asserted by `tests/test_boundary.py`, not by prose |
 | Unmapped tool denied | **3/3** | the gate fails closed |
-| Median latency | **38s** | against the four minutes a person spends, and misses |
+| Median latency | **39s** | against the four minutes a person spends, and misses |
+
+The verdict level is measured given a known official domain. Establishing that
+domain is itself part of the run — SerpApi discovers it when it is not supplied —
+but the accuracy figure holds it fixed so the number means one thing.
 
 The two negatives matter as much as the four positives. A control that flags
 everything gets muted: `name.com` itself has 20 of 34 confusable variants
@@ -85,7 +89,9 @@ Nothing there is mocked. The envelope really exists in Foxit, in draft, unsent.
     uv pip install --python .venv/bin/python -e .
     cp .env.example .env.local     # then fill it in
     set -a; . ./.env.local; set +a
-    .venv/bin/python demo/run_demo.py
+    .venv/bin/python demo/run_demo.py            # the whole pipeline
+    .venv/bin/python demo/run_from_prompt.py     # the same run, from a plain instruction
+    .venv/bin/python demo/benchmark/measure.py   # the labelled set and the scorecard
 
 Every provider degrades on its own: if a credential is missing, that stage is
 recorded as skipped and the run continues. A key that never arrives costs one

@@ -57,10 +57,10 @@ FLEET: tuple[CountersignAgent, ...] = (
         runs_when="on every document, before extraction",
         stages=(STAGE_INGEST,),
         capabilities=(Cap.DOC_EXTRACT,),
-        model_setting=FLASH,
-        reasoning="A supplier invoice is attacker-controlled input. Text embedded in the "
-        "PDF that instructs the fleet to approve the payment is the obvious attack, "
-        "and it has to be caught before extraction, not after.",
+        reasoning="A supplier invoice is attacker-controlled input, and text embedded in "
+        "the PDF that instructs the fleet is the obvious attack. Deliberately no model: "
+        "asking a model whether a document is trying to manipulate a model puts the "
+        "judgement inside the blast radius.",
     ),
     CountersignAgent(
         agent_id=DOCUMENT_EXTRACTOR_ID,
