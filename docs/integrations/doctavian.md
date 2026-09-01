@@ -1,6 +1,47 @@
 # Doctavian — Generate It Right. Sign It Tight.
 
-## Status: credentialed on the demo environment
+## Status: authenticated, uploading, blocked in their generator
+
+Auth is solved. `GET /v1/documents/document/list` returns 200 with the bearer from
+their portal plus the api-key, and both `template/upload` and `data/upload` return
+201 with a storage id.
+
+`POST /v1/documents/document/generate` returns **500 `TEMPLATE_READ_FAILED` /
+`GENERATE_FUNCTION_FAILED`** on every attempt. Event ids for their support:
+`bab3e41a-271b-41c7-ac87-a8b0afe8b16e`, `3ff066b6-f011-494f-93fb-8d9bc1bce156`,
+`f8a6addc-c421-461e-90ec-f9805dadd83c`.
+
+Ruled out, one at a time:
+
+| Tried | Result |
+|---|---|
+| Minimal python-generated .docx | same 500 |
+| Fully formatted .docx with tables and styles | same 500 |
+| .docx produced by a different engine, `file` reports "Microsoft Word 2007+" | same 500 |
+| `urn` as bare GUID, and as `GUID:filename` | same 500 |
+| `{{placeholder}}` syntax | same 500 |
+| Documented `<mdoc:text>` element syntax | same 500 |
+| Fresh upload immediately before each attempt | same 500 |
+
+The failure is on the read, before any template parsing, which is why the syntax
+made no difference.
+
+## What their template documentation reveals
+
+The generator is **Maven Documents**, and it is Salesforce-native. Its own reference
+states the purpose plainly: *"to keep the flexibility of standard document generation,
+while also incorporating data from the Salesforce database"*, and *"on Salesforce,
+users define the dynamic data they want inside an element"*.
+
+Elements are written as HTML-like tags inside the document — `mdoc:repeater`,
+`mdoc:table`, `mdoc:text` — and the parameters that carry data are Salesforce field
+expressions. The REST API exposes `loadMethod: Storage` as an alternative to
+`Salesforce`, but the template model underneath assumes an org.
+
+That is a plausible explanation for a read that fails before parsing, and it is a
+guess: we could not confirm it, and said so when reporting it.
+
+## Original status note
 
 Doctavian provisioned a hackathon account ("Team Carlos") on their demo
 environment:
