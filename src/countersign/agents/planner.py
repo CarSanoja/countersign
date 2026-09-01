@@ -55,16 +55,38 @@ class RunPlan(StrictBaseModel):
 def plan_from_rules(instruction: str) -> RunPlan:
     """What can be read off the sentence without asking anyone."""
     document = _DOCUMENT.search(instruction)
-    domains = [
-        found.group(1).lower()
-        for found in _DOMAIN.finditer(instruction)
-        if not found.group(1).lower().endswith(".pdf")
-    ]
+    domains = _official_candidates(instruction)
     return RunPlan(
         document_ref=document.group(0) if document else "",
         official_domain=domains[0] if domains else "",
         intent=instruction.strip()[:200],
     )
+
+
+_OFFICIAL_CUE = re.compile(
+    r"(?:real|official|actual|genuine)\s+(?:site|domain|website)\s*(?:is\s*)?[:\s]*"
+    r"((?:[a-z0-9-]+\.)+[a-z]{2,})",
+    re.IGNORECASE,
+)
+
+
+def _official_candidates(instruction: str) -> list[str]:
+    """The vendor's real domain, never the one the invoice arrived from.
+
+    An instruction usually names both: the lure and the truth. Taking the first
+    domain in the sentence hands the attacker's domain to every downstream check
+    as the thing to measure against, which quietly validates the impersonation.
+    A cue wins; an address after an @ is excluded outright.
+    """
+    cued = _OFFICIAL_CUE.search(instruction)
+    if cued is not None:
+        return [cued.group(1).lower()]
+    return [
+        found.group(1).lower()
+        for found in _DOMAIN.finditer(instruction)
+        if not found.group(1).lower().endswith(".pdf")
+        and not instruction[: found.start()].rstrip().endswith("@")
+    ]
 
 
 async def plan_run(

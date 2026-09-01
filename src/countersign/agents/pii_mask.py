@@ -12,9 +12,12 @@ unextractable — the two are for different jobs and the order matters.
 
 import re
 
-_IBAN = re.compile(r"\b[A-Z]{2}\d{2}[ ]?(?:[A-Za-z0-9]{2,6}[ ]?){2,7}\b")
+_IBAN_LABELLED = re.compile(r"\bIBAN[:\s-]*([A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{2,6}){2,7})")
+_IBAN = re.compile(r"\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{2,6}){2,7}\b")
 _LONG_DIGITS = re.compile(r"\b\d[\d ]{7,}\d\b")
-_SWIFT = re.compile(r"\b[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\b")
+_SWIFT = re.compile(
+    r"\b((?:SWIFT|BIC)(?:/BIC)?[:\s-]*)([A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?)\b", re.I
+)
 _EMAIL_USER = re.compile(r"\b([A-Za-z0-9._%+-]+)@")
 _TAX_ID = re.compile(r"\b(VAT|Tax\s*ID|TIN|EIN|NIF|CIF)[:\s-]*([A-Z]{0,2}[-]?[A-Z0-9]{6,})", re.I)
 
@@ -28,7 +31,7 @@ def mask_pii(text: str) -> str:
     """
     masked = _IBAN.sub(lambda m: re.sub(r"[A-Za-z0-9]", "#", m.group(0)), text)
     masked = _LONG_DIGITS.sub(lambda m: re.sub(r"\d", "#", m.group(0)), masked)
-    masked = _SWIFT.sub(lambda m: "#" * len(m.group(0)), masked)
+    masked = _SWIFT.sub(lambda m: m.group(1) + "#" * len(m.group(2)), masked)
     masked = _TAX_ID.sub(
         lambda m: f"{m.group(1)} " + re.sub(r"[A-Za-z0-9]", "#", m.group(2)), masked
     )
@@ -40,6 +43,15 @@ def carries_pii(text: str) -> bool:
 
 
 def iban_in(text: str) -> str | None:
-    """The IBAN a span carries, read by rule so no model ever handles one."""
-    found = _IBAN.search(text)
-    return re.sub(r"\s+", " ", found.group(0)).strip() if found else None
+    """The IBAN a span carries, read by rule so no model ever handles one.
+
+    A labelled match is preferred: a document that mentions a closed account
+    alongside the new one would otherwise hand back whichever came first, and
+    the account being paid is the one that matters.
+    """
+    labelled = _IBAN_LABELLED.search(text)
+    found = labelled.group(1) if labelled else None
+    if found is None:
+        loose = _IBAN.search(text)
+        found = loose.group(0) if loose else None
+    return re.sub(r"\s+", " ", found).strip() if found else None

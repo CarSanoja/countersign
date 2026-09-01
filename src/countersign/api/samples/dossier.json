@@ -1,127 +1,127 @@
 {
-  "run_id": "countersign-20260831T140209Z",
-  "document_ref": "INV-88214.pdf — Acme Industrial Supply, Inc.",
-  "started_at": "2026-08-31T14:02:09Z",
-  "finished_at": "2026-08-31T14:03:21Z",
-  "trace_persisted": true,
-  "errors": [],
-  "document": {},
-  "envelope": {
-    "capability": "envelope.prepare",
-    "folder_id": "fld_7Kq2ZR8m4pWc",
-    "folder_name": "Bank detail confirmation — Acme Industrial Supply",
-    "folder_status": "DRAFT",
-    "dispatched": false,
-    "awaiting": "a person to send it; no email was sent and no signing session exists"
-  },
+  "run_id": "countersign-20260901T144431053190+0000",
+  "document_ref": "demo/benchmark/pdfs/homoglyph.pdf",
+  "started_at": "2026-09-01T14:44:31.053190+00:00",
+  "finished_at": "2026-09-01T14:45:26.575181+00:00",
   "verdict": {
-    "run_id": "countersign-20260831T140209Z",
+    "run_id": "countersign-20260901T144431053190+0000",
     "level": "high",
-    "headline": "The bank account on this invoice changed, and the address it was sent from is a registered look-alike of the vendor's own domain.",
-    "recommended_action": "Do not pay. Send the counter-document for out-of-band confirmation and route the envelope to a human signer; no agent in this fleet may execute it.",
-    "decided_at": "2026-08-31T14:03:07Z",
+    "headline": "Confusable variants of the official domain name.com are already registered by other parties.",
     "signals": [
       {
         "kind": "bank_details_changed",
         "weight": 0.45,
         "claim": {
-          "statement": "This invoice pays to IBAN ES91 2100 0418 4502 0005 1332. The vendor record has paid to DE44 5001 0517 5407 3249 31 since June 2023, and nothing but this document asks for the change.",
-          "confidence": 0.93,
+          "statement": "The document announces new bank details ('PLEASE NOTE OUR BANK'), so the account this invoice directs payment to is not the one on file.",
           "sources": [
             {
               "provider": "nutrient",
-              "locator": "doc_9f2c1a7e/INV-88214.pdf",
-              "snippet": "Remit to: IBAN ES91 2100 0418 4502 0005 1332 / BIC CAIXESBBXXX",
-              "retrieved_at": "2026-08-31T14:02:19Z",
-              "box": {"page": 0, "left": 0.561, "top": 0.712, "width": 0.352, "height": 0.031}
-            },
-            {
-              "provider": "xano",
-              "locator": "https://x8ki-letl-twmt.n7.xano.io/api:v1/vendors/4471",
-              "snippet": "bank_iban DE44 5001 0517 5407 3249 31, unchanged since 2023-06-02",
-              "retrieved_at": "2026-08-31T14:02:21Z"
+              "locator": "demo/benchmark/pdfs/homoglyph.pdf",
+              "box": {
+                "page": 0,
+                "left": 0.08323232323232323,
+                "top": 0.46723404255319145,
+                "width": 0.5684848484848485,
+                "height": 0.009929078014184398
+              },
+              "snippet": "Remittance details - PLEASE NOTE OUR BANK HAS CHANGED",
+              "retrieved_at": "2026-09-01T14:44:39.562535+00:00"
             }
-          ]
+          ],
+          "confidence": 1.0
+        }
+      },
+      {
+        "kind": "sender_domain_not_official",
+        "weight": 0.3,
+        "claim": {
+          "statement": "The invoice was sent from narne.com, which is not name.com, the vendor's official domain.",
+          "sources": [
+            {
+              "provider": "namecom",
+              "locator": "narne.com",
+              "box": null,
+              "snippet": "checkAvailability against production",
+              "retrieved_at": "2026-09-01T14:44:51.014377+00:00"
+            }
+          ],
+          "confidence": 1.0
         }
       },
       {
         "kind": "confusable_already_registered",
         "weight": 0.35,
         "claim": {
-          "statement": "acrne-supply.com is the rn-for-m confusable of the vendor's official acme-supply.com. The registry reports it is not available, so that surface is occupied, and it is the address this invoice was sent from.",
-          "confidence": 0.88,
+          "statement": "8 confusable variant(s) of name.com are already registered, so the impersonation surface is occupied.",
           "sources": [
             {
               "provider": "namecom",
-              "locator": "acrne-supply.com",
-              "snippet": "checkAvailability: purchasable false — the name is registered to someone",
-              "retrieved_at": "2026-08-31T14:02:58Z"
-            },
-            {
-              "provider": "nutrient",
-              "locator": "doc_9f2c1a7e/INV-88214.pdf",
-              "snippet": "Billing enquiries: billing@acrne-supply.com",
-              "retrieved_at": "2026-08-31T14:02:19Z",
-              "box": {"page": 0, "left": 0.072, "top": 0.128, "width": 0.281, "height": 0.024}
+              "locator": "narne.com",
+              "box": null,
+              "snippet": "checkAvailability against production",
+              "retrieved_at": "2026-09-01T14:44:51.014377+00:00"
             }
-          ]
+          ],
+          "confidence": 1.0
         }
       }
-    ]
+    ],
+    "recommended_action": "Do not pay. Send the counter-document for out-of-band confirmation and route the envelope to a human signer; no agent in this fleet may execute it.",
+    "decided_at": "2026-09-01T14:45:24.216364+00:00"
   },
   "trace": [
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 0,
       "agent_id": "document-extractor",
       "tool": "nutrient_extract_fields",
       "capability": "doc.extract",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:02:12Z"
+      "recorded_at": "2026-09-01T14:44:31.053231+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 1,
       "agent_id": "counterparty-verifier",
       "tool": "serpapi_find_official_site",
       "capability": "web.search",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:02:31Z"
+      "recorded_at": "2026-09-01T14:44:39.562823+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 2,
       "agent_id": "counterparty-verifier",
       "tool": "serpapi_adverse_media",
       "capability": "web.search",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:02:31Z"
+      "recorded_at": "2026-09-01T14:44:39.562833+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 3,
       "agent_id": "counterparty-verifier",
       "tool": "serpapi_verify_address",
       "capability": "web.search",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:02:31Z"
+      "recorded_at": "2026-09-01T14:44:39.562838+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 4,
       "agent_id": "domain-sentinel",
       "tool": "namecom_check_availability",
       "capability": "domain.query",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:02:54Z"
+      "recorded_at": "2026-09-01T14:44:49.783839+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 5,
       "agent_id": "envelope-preparer",
       "tool": "foxit_execute_signature",
@@ -130,79 +130,127 @@
       "reasons": [
         "signature.execute is held by no agent in the fleet, only by a person"
       ],
-      "recorded_at": "2026-08-31T14:03:11Z"
+      "recorded_at": "2026-09-01T14:45:24.216457+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 6,
       "agent_id": "envelope-preparer",
       "tool": "foxit_prepare_envelope",
       "capability": "envelope.prepare",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:03:13Z"
+      "recorded_at": "2026-09-01T14:45:24.216489+00:00"
     },
     {
-      "run_id": "countersign-20260831T140209Z",
+      "run_id": "countersign-20260901T144431053190+0000",
       "seq": 7,
+      "agent_id": "countersign-harness",
+      "tool": "xano_persist_vendor",
+      "capability": "backend.persist",
+      "decision": "allow",
+      "reasons": [],
+      "recorded_at": "2026-09-01T14:45:25.278905+00:00"
+    },
+    {
+      "run_id": "countersign-20260901T144431053190+0000",
+      "seq": 8,
       "agent_id": "countersign-harness",
       "tool": "xano_append_audit",
       "capability": "backend.persist",
       "decision": "allow",
       "reasons": [],
-      "recorded_at": "2026-08-31T14:03:20Z"
-    }
-  ],
-  "stages": [
-    {
-      "stage": "ingest",
-      "status": "completed",
-      "detail": "17 fields anchored, 3 absent",
-      "errors": []
-    },
-    {
-      "stage": "identity",
-      "status": "completed",
-      "detail": "2 signal(s), 3 search credit(s) spent",
-      "errors": []
-    },
-    {
-      "stage": "domain",
-      "status": "completed",
-      "detail": "40 name(s) checked, 1 confusable(s) already registered",
-      "errors": []
-    },
-    {
-      "stage": "risk",
-      "status": "completed",
-      "detail": "high at score 0.80 on 2 signal(s), from 11 evidence item(s)",
-      "errors": []
-    },
-    {
-      "stage": "generation",
-      "status": "skipped",
-      "detail": "doctavian is unconfigured: DOCTAVIAN_API_KEY, DOCTAVIAN_ACCESS_TOKEN unset, so this stage is omitted and the run continues",
-      "errors": []
-    },
-    {
-      "stage": "delivery",
-      "status": "completed",
-      "detail": "envelope fld_7Kq2ZR8m4pWc left in draft, awaiting a human signer",
-      "errors": []
-    },
-    {
-      "stage": "persistence",
-      "status": "completed",
-      "detail": "8 gate decision(s) written to audit_log",
-      "errors": []
+      "recorded_at": "2026-09-01T14:45:26.068965+00:00"
     }
   ],
   "skipped": [
     {
       "stage": "generation",
       "provider": "doctavian",
-      "reason": "doctavian is unconfigured: DOCTAVIAN_API_KEY, DOCTAVIAN_ACCESS_TOKEN unset, so this stage is omitted and the run continues",
-      "missing_variables": ["DOCTAVIAN_API_KEY", "DOCTAVIAN_ACCESS_TOKEN"]
+      "reason": "no template is configured; set RunConfig.template_path",
+      "missing_variables": []
     }
-  ]
+  ],
+  "stages": [
+    {
+      "stage": "ingest",
+      "status": "completed",
+      "detail": "7 fields anchored, 1 absent",
+      "errors": []
+    },
+    {
+      "stage": "identity",
+      "status": "completed",
+      "detail": "0 signal(s), 3 search credit(s) spent",
+      "errors": []
+    },
+    {
+      "stage": "domain",
+      "status": "completed",
+      "detail": "24 name(s) checked, 8 confusable(s) already registered",
+      "errors": []
+    },
+    {
+      "stage": "risk",
+      "status": "completed",
+      "detail": "high at score 1.00 on 3 signal(s), from 17 evidence item(s)",
+      "errors": []
+    },
+    {
+      "stage": "generation",
+      "status": "skipped",
+      "detail": "no template is configured; set RunConfig.template_path",
+      "errors": []
+    },
+    {
+      "stage": "delivery",
+      "status": "completed",
+      "detail": "envelope 35672783 left in draft, awaiting a human signer",
+      "errors": []
+    },
+    {
+      "stage": "persistence",
+      "status": "completed",
+      "detail": "9 audit row(s) written",
+      "errors": []
+    }
+  ],
+  "document": {},
+  "envelope": {
+    "capability": "envelope.prepare",
+    "folder_id": 35672783,
+    "folder_status": "DRAFT",
+    "folder_name": "Bank verification - Name",
+    "document_ids": [
+      41533431
+    ],
+    "parties": [
+      {
+        "sequence": 1,
+        "name": "Finance Team",
+        "email_id": "csanoja@somosquanta.com",
+        "permission": "FILL_FIELDS_AND_SIGN",
+        "field_count": 1
+      }
+    ],
+    "dispatched": false,
+    "awaiting": "a person who holds signature.execute; the envelope is a draft, no email left, and no signing session exists",
+    "prepared_by": "envelope-preparer",
+    "calls_a_model": false,
+    "signature_attempted": true,
+    "signature_executed": false,
+    "denials": [
+      {
+        "agent_id": "envelope-preparer",
+        "tool": "foxit_execute_signature",
+        "capability": "signature.execute",
+        "human_only": true,
+        "denied_by": "capability gate",
+        "reason": "signature.execute is held by no agent in the fleet, only by a person",
+        "attempted_at": "2026-09-01T14:45:25.278772+00:00"
+      }
+    ]
+  },
+  "trace_persisted": true,
+  "errors": []
 }

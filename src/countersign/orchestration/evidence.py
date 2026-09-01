@@ -97,7 +97,26 @@ def sweep_items(sweep: DomainSweep) -> list[EvidenceItem]:
     return items
 
 
-def _established_signals(sweep: DomainSweep, at: str) -> list[RiskSignal]:
+def _official_source(assessment: CounterpartyAssessment | None) -> SourceRef | None:
+    """Which search result established the vendor's real domain.
+
+    The comparison that drives the whole verdict is sender against official, and
+    the official half is discovered, not given. Citing only the registry would
+    credit name.com for an answer SerpApi supplied.
+    """
+    if assessment is None or not assessment.official_domain:
+        return None
+    for claim in assessment.claims:
+        for source in claim.sources:
+            names_it = assessment.official_domain in claim.statement
+            if source.provider is Provider.SERPAPI and names_it:
+                return source
+    return None
+
+
+def _established_signals(
+    sweep: DomainSweep, at: str, official_source: SourceRef | None = None
+) -> list[RiskSignal]:
     """Turn the registry's settled facts into signals the model cannot drop."""
     statements = sweep.established_claims()
     sender_is_official = bool(sweep.sender_domain) and (
@@ -110,22 +129,21 @@ def _established_signals(sweep: DomainSweep, at: str) -> list[RiskSignal]:
         statement = statements.get(kind)
         if statement is None:
             continue
+        sources = [
+            SourceRef(
+                provider=Provider.NAMECOM,
+                locator=sweep.sender_domain or sweep.official_domain,
+                snippet=f"checkAvailability against {sweep.environment}",
+                retrieved_at=sweep.swept_at or at,
+            )
+        ]
+        if kind is SignalKind.SENDER_DOMAIN_NOT_OFFICIAL and official_source is not None:
+            sources.append(official_source)
         signals.append(
             RiskSignal(
                 kind=kind,
                 weight=SIGNAL_WEIGHTS[kind],
-                claim=Claim(
-                    statement=statement,
-                    sources=[
-                        SourceRef(
-                            provider=Provider.NAMECOM,
-                            locator=sweep.sender_domain or sweep.official_domain,
-                            snippet=f"checkAvailability against {sweep.environment}",
-                            retrieved_at=sweep.swept_at or at,
-                        )
-                    ],
-                    confidence=1.0,
-                ),
+                claim=Claim(statement=statement, sources=sources, confidence=1.0),
             )
         )
     return signals
@@ -164,10 +182,13 @@ def build_bundle(
             )
     if assessment is not None and assessment.usable_for_verdict:
         items.extend(verification_items(assessment))
+        established.extend(assessment.signals)
     if sweep is not None:
         items.extend(sweep_items(sweep))
         required = sweep.established_signals()
-        established.extend(_established_signals(sweep, utc_now().isoformat()))
+        established.extend(
+            _established_signals(sweep, utc_now().isoformat(), _official_source(assessment))
+        )
         if sweep.sender_domain and sweep.sender_domain == sweep.official_domain:
             suppressed.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
     if not items:

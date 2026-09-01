@@ -2,42 +2,71 @@
 
 ## La afirmación central
 
-El agente hace todo el papeleo y **es estructuralmente incapaz de firmar**. No es una
-promesa del prompt: es una lista de capacidades que se comprueba en código
-(`src/agent/policy.ts`). `execute_signature` y `release_payment` están reservadas a un
-principal humano, y cualquier intento del agente lanza `CapabilityDenied`, que la traza
-registra como paso `denied` en vez de ocultarlo.
+El agente hace todo el papeleo y **es estructuralmente incapaz de firmar o de pagar**. No
+es una promesa del prompt: es una lista de capacidades comprobada en
+`src/countersign/fleet/capabilities.py`. Una herramienta que no está declarada resuelve a
+`None` y se deniega, de modo que la puerta **falla cerrada** en vez de conceder un poder
+sin nombre.
 
-Esto es exactamente lo que pide el challenge de Foxit ("agents should not auto-sign;
-demonstrate thoughtful handoff") y lo que pide Nutrient ("human-in-the-loop").
+`tests/test_boundary.py` falla si alguien concede alguna vez a un agente el poder de
+firmar.
 
-## Etapas y reparto por sponsor
+## Etapas, y quién hace cada una
 
 | Etapa | Módulo | Proveedor | Qué hace |
 |---|---|---|---|
-| ingest | `src/ingest` | Nutrient DWS | parse/OCR/extracción determinista con procedencia; redacta PII antes del LLM |
-| identity | `src/identity` | SerpApi | verifica que la contraparte existe: sitio oficial, dirección, litigios |
-| domain | `src/domain-intel` | name.com CORE | barrido de variantes confundibles; cuáles ya están registradas |
-| risk | `src/risk` | — | funde las señales en un veredicto con procedencia |
-| generate | `src/generate` | Doctavian | produce el contradocumento desde datos estructurados |
-| handoff | `src/sign` | Foxit eSign | prepara el sobre; la firma la ejecuta un humano |
-| persistencia | `src/backend` | Xano | proveedores, estado del flujo y log de auditoría |
+| ingest | `agents/document_extractor*.py` | Nutrient DWS | parse determinista; el modelo solo mapea spans existentes a campos con nombre |
+| identity | `agents/counterparty_*.py` | SerpApi | desambigua la entidad antes de leer si la cobertura es adversa |
+| domain | `agents/domain_sentinel*.py` | name.com | barrido de confusables en ocho clases de ataque |
+| risk | `agents/risk_*.py` | — | funde la evidencia; rechaza un veredicto cuya afirmación no cite su span |
+| generation | `tools/doctavian*.py` | Doctavian | redacta la verificación bancaria fuera de banda |
+| delivery | `agents/envelope_preparer.py` | Foxit eSign | prepara el sobre y **se detiene** |
+| persistence | `tools/xano.py` | Xano | proveedores, estado del flujo y log de auditoría |
 
-## Modo live / fixture
+La orquestación vive en `src/countersign/orchestration/`: `pipeline.py` encadena las
+etapas, `gate.py` autoriza cada llamada a herramienta, `evidence.py` construye el paquete
+de evidencia y `stages.py` declara qué credencial necesita cada etapa.
 
-Cada proveedor declara sus variables en `src/lib/env.ts`. Si faltan, ese proveedor corre
-en `fixture` y el resto del pipeline sigue funcionando. Con 3 días y 6 claves, esto
-significa que una clave que no llegue tumba **un track, no el demo**.
+## Lo que se decide por regla, y por qué
 
-## Por qué el barrido de dominios es la señal, y no el whois
+Cuatro veces durante la construcción el mismo defecto apareció disfrazado: **un hecho que
+una regla podía decidir se dejó al modelo, y se decidió distinto entre corridas o no se
+decidió**. Estos ya no pasan por un modelo:
 
-`GetDomain` de name.com solo responde por dominios de la propia cuenta, así que no sirve
-para due diligence de un tercero. `checkAvailability` sí responde por cualquier dominio,
-y la pregunta que de verdad importa en fraude de proveedor no es "cuándo se registró
-esto" sino **"¿quién posee ya las variantes confundibles del dominio real de mi
-proveedor?"**. Un `acrnecorp.com` (rn→m) registrado por un tercero es una suplantación
-armada y esperando.
+- **el dominio del remitente** — lo que sigue al `@`, y un correo pesa más que un logo
+- **el cambio de datos bancarios** — el documento lo anuncia con palabras
+- **el IBAN** — tiene forma definida, así que lo lee un regex y ningún modelo lo toca
+- **la comparación remitente contra oficial** — es una comparación de cadenas
 
-Se generan 8 clases de ataque —tld-swap, hyphen, omission, doubling, transposition,
-homoglyph, adjacent-key, suffix— repartidas en cuotas para que el barrido no se agote en
-una sola clase. 40 variantes entran en una llamada (el límite es 50).
+Las señales así establecidas viajan con el paquete de evidencia y **tienen precedencia**
+sobre el borrador del modelo, que puede añadir tipos pero no puede quitar los ya resueltos.
+
+## Procedencia
+
+`schemas/evidence.PageBox` guarda **fracciones de página**, validadas a 0..1. Los dos
+productos de Nutrient reportan en unidades distintas —píxeles de render y puntos PDF— y el
+DPI no está documentado ni garantizado estable, así que una caja absoluta guardada es un
+bug esperando otro tamaño de página.
+
+`Claim` exige al menos una `SourceRef`. Un `Verdict` de nivel alto sin señales se rechaza
+en construcción.
+
+## PII
+
+El mapeador dice qué span contiene qué campo, y para eso necesita la forma de una línea,
+no sus dígitos. `agents/pii_mask.py` enmascara IBAN, BIC, identificadores fiscales y el
+buzón de los correos —conservando el dominio, que es la señal— antes de construir el
+prompt. El valor real se lee del span después. Ningún identificador de cuenta entra jamás
+en el contexto de un modelo.
+
+## Degradación por proveedor
+
+Cada etapa declara sus variables de entorno en `orchestration/stages.py`. Si falta una, la
+etapa se registra como omitida nombrando la variable y la corrida continúa. Una clave que
+no llega cuesta una etapa, nunca la corrida.
+
+## Cómo verlo correr
+
+    .venv/bin/python demo/run_demo.py            # el pipeline completo
+    .venv/bin/python demo/run_from_prompt.py     # lo mismo desde una instrucción
+    .venv/bin/python demo/benchmark/measure.py   # el conjunto etiquetado

@@ -52,24 +52,42 @@ def test_verdict_leads_the_page(dossier: AssessmentResult) -> None:
 
 
 def test_score_is_shown_as_arithmetic_a_judge_can_redo(dossier: AssessmentResult) -> None:
-    assert "score 0.80 = 0.45 + 0.35" in render_dossier(dossier)
+    arithmetic = " + ".join(f"{signal.weight:.2f}" for signal in dossier.verdict.signals)
+    assert arithmetic in render_dossier(dossier), "a judge must be able to redo the sum"
 
 
 def test_every_claim_carries_a_linked_source(dossier: AssessmentResult) -> None:
     page = render_dossier(dossier)
-    assert 'href="https://x8ki-letl-twmt.n7.xano.io/api:v1/vendors/4471"' in page
-    assert 'href="https://acrne-supply.com"' in page
+    for signal in dossier.verdict.signals:
+        for source in signal.claim.sources:
+            assert source.locator in page, "a claim was rendered without its source"
+    linkable = [
+        source.locator
+        for signal in dossier.verdict.signals
+        for source in signal.claim.sources
+        if source.locator.startswith("http")
+    ]
+    for locator in linkable:
+        assert f'href="{locator}"' in page, "a source that is a URL must be clickable"
     assert UNSOURCED not in page
 
 
 def test_a_document_id_is_printed_but_never_linked(dossier: AssessmentResult) -> None:
     page = render_dossier(dossier)
-    assert '<code class="locator">doc_9f2c1a7e/INV-88214.pdf</code>' in page
+    assert '<code class="locator">demo/benchmark/pdfs/homoglyph.pdf</code>' in page
     assert 'href="doc_9f2c1a7e' not in page
 
 
 def test_a_page_box_is_shown_in_human_page_numbers(dossier: AssessmentResult) -> None:
-    assert "page 1 · 56%,71%" in render_dossier(dossier)
+    page = render_dossier(dossier)
+    boxed = [
+        source
+        for signal in dossier.verdict.signals
+        for source in signal.claim.sources
+        if source.box is not None
+    ]
+    assert boxed, "the sample must carry at least one page box"
+    assert f"page {boxed[0].box.page + 1} · " in page, "boxes are shown in human page numbers"
 
 
 def test_a_claim_cannot_be_built_without_a_source() -> None:
@@ -100,7 +118,10 @@ def test_the_agent_is_named_from_the_roster(dossier: AssessmentResult) -> None:
 
 def test_skipped_stages_name_the_variable_that_was_missing(dossier: AssessmentResult) -> None:
     page = render_dossier(dossier)
-    assert "unset: DOCTAVIAN_API_KEY, DOCTAVIAN_ACCESS_TOKEN" in page
+    for entry in dossier.skipped:
+        assert entry.stage.value in page, "a skipped stage must say which stage it was"
+        for variable in entry.missing_variables:
+            assert variable in page, "a credential skip must name the variable"
     assert 'class="chip chip--skipped"' in page
 
 
@@ -111,8 +132,9 @@ def test_a_run_with_nothing_skipped_says_so(dossier: AssessmentResult) -> None:
 
 def test_the_envelope_is_shown_as_a_draft_awaiting_a_person(dossier: AssessmentResult) -> None:
     page = render_dossier(dossier)
-    assert "fld_7Kq2ZR8m4pWc" in page
-    assert "no email was sent and no signing session exists" in page
+    assert str(dossier.envelope["folder_id"]) in page
+    assert dossier.envelope["dispatched"] is False
+    assert str(dossier.envelope["awaiting"]) in page, "the page must say who it waits for"
 
 
 def test_a_run_without_a_verdict_says_so_instead_of_reading_as_clear() -> None:
