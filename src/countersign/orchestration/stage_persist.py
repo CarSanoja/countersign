@@ -12,7 +12,6 @@ so the last row of every run is the run's own decision to write itself down.
 
 from typing import Any
 
-from autocurricula.schemas.common import utc_now
 from autocurricula.tools.base import ToolResult
 
 from countersign.orchestration.baseline import baseline_columns, baseline_configured
@@ -20,6 +19,7 @@ from countersign.orchestration.gate import HARNESS_ID, authorize, guarded
 from countersign.orchestration.sink import TraceSink
 from countersign.orchestration.stages import Stage, skipped
 from countersign.orchestration.state import RunState
+from countersign.schemas.verdict import RiskLevel
 from countersign.tools.xano import xano_persist_vendor
 
 AUDIT_TOOL = "xano_append_audit"
@@ -87,17 +87,24 @@ def vendor_row(state: RunState) -> dict[str, Any]:
 
 
 def _bank_file(state: RunState) -> dict[str, str]:
-    """The account this run saw, so the next run has something to compare against.
+    """The account this run saw, recorded only when the run found nothing wrong.
 
-    Only the fingerprint is stored, never the account. A vendor acquires a file
-    the first time an invoice from them is assessed, which is what turns the
-    bank-change signal from a phrase match into a comparison.
+    A file is a statement that this account is the vendor's, so it may only be
+    written from an assessment that cleared. Recording whatever arrived first
+    would mean that a supplier whose very first invoice is the fraud gets the
+    attacker's account enrolled as their baseline, and every later genuine
+    invoice would then read as the redirection. A file acquired without
+    verification is worse than no file.
+
+    Only the fingerprint is stored, never the account.
     """
     invoice = state.invoice
     if invoice is None or invoice.iban is None or not baseline_configured():
         return {}
     verdict = state.verdict
-    at = verdict.decided_at if verdict is not None else utc_now().isoformat()
+    if verdict is None or verdict.level is not RiskLevel.CLEAR:
+        return {}
+    at = verdict.decided_at
     try:
         return baseline_columns(invoice.iban.value, at)
     except Exception:

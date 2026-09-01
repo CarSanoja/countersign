@@ -33,18 +33,18 @@
     "prices": {
       "nutrient_credits_per_run": 5.0,
       "nutrient_quote_live": true,
-      "serpapi_searches_left": 232,
+      "serpapi_searches_left": 223,
       "serpapi_quote_error": null
     },
-    "git_head": "e845132"
+    "git_head": "2a803a8"
   },
   "false_positives": {
     "legitimate_runs": 32,
-    "legitimate_runs_with_verdict": 31,
-    "false_positive_rate": 0.8065,
-    "false_positives": "25/31",
-    "blocking_false_positive_rate": 0.1935,
-    "blocking_false_positives": "6/31",
+    "legitimate_runs_with_verdict": 32,
+    "false_positive_rate": 0.5,
+    "false_positives": "16/32",
+    "blocking_false_positive_rate": 0.125,
+    "blocking_false_positives": "4/32",
     "flagged_legitimate_cases": [
       "legit-accounts-subdomain",
       "legit-bank-change",
@@ -52,18 +52,11 @@
       "legit-billing-subdomain",
       "legit-billing-subdomain-credit",
       "legit-billing-subdomain-renewal",
-      "legit-clean-01",
-      "legit-clean-02",
-      "legit-clean-03",
-      "legit-clean-04",
       "legit-first-time-supplier",
-      "legit-mixed-case-sender",
-      "legit-second-in-month",
       "legit-sibling-tld"
     ],
     "blocked_legitimate_cases": [
       "legit-bank-change-subdomain",
-      "legit-billing-subdomain",
       "legit-sibling-tld"
     ]
   },
@@ -75,33 +68,24 @@
     "missed_cases": []
   },
   "stability": {
-    "level_stable": "17/20",
-    "signal_set_stable": "16/20",
-    "cases_that_moved": [
-      "legit-bank-change",
-      "legit-mixed-case-sender",
-      "legit-second-in-month"
-    ],
-    "cases_whose_signals_moved": [
-      "fraud-subdomain-lure",
-      "legit-bank-change",
-      "legit-mixed-case-sender",
-      "legit-second-in-month"
-    ]
+    "level_stable": "20/20",
+    "signal_set_stable": "20/20",
+    "cases_that_moved": [],
+    "cases_whose_signals_moved": []
   },
   "latency": {
     "runs": 40,
-    "p50_seconds": 28.2,
-    "p95_seconds": 42.7,
-    "max_seconds": 68.4,
-    "mean_seconds": 30.7,
+    "p50_seconds": 28.4,
+    "p95_seconds": 38.0,
+    "max_seconds": 53.1,
+    "mean_seconds": 29.7,
     "p50_by_pass": {
-      "1": 28.2,
-      "2": 28.7
+      "1": 25.9,
+      "2": 28.4
     },
     "p95_by_pass": {
-      "1": 68.4,
-      "2": 67.7
+      "1": 53.1,
+      "2": 38.0
     }
   },
   "providers": {
@@ -120,22 +104,21 @@
         "failed": 4
       },
       "ingest": {
-        "completed": 23,
-        "degraded": 17
+        "completed": 21,
+        "degraded": 19
       },
       "persistence": {
         "completed": 40
       },
       "risk": {
-        "completed": 39,
-        "failed": 1
+        "completed": 40
       }
     },
     "provider_faults": {
       "serpapi": 4
     },
-    "degraded_or_failed_stages": 22,
-    "runs_without_verdict": 1
+    "degraded_or_failed_stages": 23,
+    "runs_without_verdict": 0
   },
   "cost": {
     "total": {
@@ -144,7 +127,7 @@
       "nutrient_calls": 40,
       "nutrient_credits": 200.0,
       "serpapi_searches": 18,
-      "vertex_calls": 89
+      "vertex_calls": 90
     },
     "per_expediente": {
       "namecom_calls": 1.0,
@@ -152,7 +135,7 @@
       "nutrient_calls": 1.0,
       "nutrient_credits": 5.0,
       "serpapi_searches": 0.45,
-      "vertex_calls": 2.23
+      "vertex_calls": 2.25
     },
     "identity_served_from_memo": 34
   },
@@ -170,28 +153,26 @@
       "official_domain": "name.com",
       "bank_change_announced": false,
       "levels": [
-        "review",
-        "review"
+        "clear",
+        "clear"
       ],
       "stable": true,
       "scores": [
-        0.45,
-        0.45
+        0,
+        0
       ],
-      "signals": [
-        "bank_details_changed"
-      ],
+      "signals": [],
       "seconds": [
-        68.38,
-        39.09
+        34.84,
+        36.78
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 3.0,
+        "serpapi_searches": 0.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 5.0
+        "vertex_calls": 4.0
       },
       "stages": {
         "ingest": "completed",
@@ -212,31 +193,29 @@
       "official_domain": "name.com",
       "bank_change_announced": false,
       "levels": [
-        "review",
-        "review"
+        "clear",
+        "clear"
       ],
       "stable": true,
       "scores": [
-        0.45,
-        0.45
+        0,
+        0
       ],
-      "signals": [
-        "bank_details_changed"
-      ],
+      "signals": [],
       "seconds": [
-        32.96,
-        35.62
+        34.98,
+        33.8
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 3.0,
+        "serpapi_searches": 0.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 5.0
+        "vertex_calls": 4.0
       },
       "stages": {
-        "ingest": "completed",
+        "ingest": "degraded",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -254,28 +233,26 @@
       "official_domain": "name.com",
       "bank_change_announced": false,
       "levels": [
-        "review",
-        "review"
+        "clear",
+        "clear"
       ],
       "stable": true,
       "scores": [
-        0.45,
-        0.45
+        0,
+        0
       ],
-      "signals": [
-        "bank_details_changed"
-      ],
+      "signals": [],
       "seconds": [
-        34.46,
-        33.72
+        30.42,
+        37.97
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 0.0,
+        "serpapi_searches": 3.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 4.0
+        "vertex_calls": 5.0
       },
       "stages": {
         "ingest": "degraded",
@@ -296,31 +273,29 @@
       "official_domain": "name.com",
       "bank_change_announced": false,
       "levels": [
-        "review",
-        "review"
+        "clear",
+        "clear"
       ],
       "stable": true,
       "scores": [
-        0.45,
-        0.45
+        0,
+        0
       ],
-      "signals": [
-        "bank_details_changed"
-      ],
+      "signals": [],
       "seconds": [
-        38.22,
-        40.42
+        34.59,
+        31.35
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 0.0,
+        "serpapi_searches": 3.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 4.0
+        "vertex_calls": 5.0
       },
       "stages": {
-        "ingest": "degraded",
+        "ingest": "completed",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -338,21 +313,20 @@
       "official_domain": "name.com",
       "bank_change_announced": false,
       "levels": [
-        "high",
-        "high"
+        "review",
+        "review"
       ],
       "stable": true,
       "scores": [
-        0.8,
-        0.8
+        0.35,
+        0.35
       ],
       "signals": [
-        "bank_details_changed",
         "confusable_already_registered"
       ],
       "seconds": [
-        32.62,
-        33.44
+        35.21,
+        34.68
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -393,8 +367,8 @@
         "confusable_already_registered"
       ],
       "seconds": [
-        22.62,
-        28.7
+        24.54,
+        34.47
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -435,8 +409,8 @@
         "confusable_already_registered"
       ],
       "seconds": [
-        26.11,
-        31.09
+        29.03,
+        22.31
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -477,8 +451,8 @@
         "confusable_already_registered"
       ],
       "seconds": [
-        28.24,
-        24.96
+        30.52,
+        29.07
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -508,19 +482,19 @@
       "bank_change_announced": true,
       "levels": [
         "review",
-        null
+        "review"
       ],
-      "stable": false,
+      "stable": true,
       "scores": [
         0.45,
-        null
+        0.45
       ],
       "signals": [
         "bank_details_changed"
       ],
       "seconds": [
-        28.25,
-        67.74
+        25.86,
+        25.98
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -534,14 +508,12 @@
         "ingest": "completed",
         "identity": "completed",
         "domain": "completed",
-        "risk": "failed",
+        "risk": "completed",
         "generation": "skipped",
         "delivery": "skipped",
         "persistence": "completed"
       },
-      "errors": [
-        "risk: ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}"
-      ],
+      "errors": [],
       "why": "the supplier really did move bank and says so: the most expensive false positive"
     },
     {
@@ -564,8 +536,8 @@
         "confusable_already_registered"
       ],
       "seconds": [
-        27.01,
-        29.71
+        24.6,
+        25.7
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -604,8 +576,8 @@
       ],
       "signals": [],
       "seconds": [
-        24.6,
-        22.16
+        25.02,
+        25.99
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -635,17 +607,17 @@
       "bank_change_announced": false,
       "levels": [
         "clear",
-        "review"
+        "clear"
       ],
-      "stable": false,
+      "stable": true,
       "scores": [
         0,
-        0.45
+        0
       ],
       "signals": [],
       "seconds": [
-        23.02,
-        21.17
+        23.75,
+        24.07
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -675,17 +647,17 @@
       "bank_change_announced": false,
       "levels": [
         "clear",
-        "review"
+        "clear"
       ],
-      "stable": false,
+      "stable": true,
       "scores": [
         0,
-        0.45
+        0
       ],
       "signals": [],
       "seconds": [
-        20.83,
-        22.65
+        23.96,
+        25.62
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -727,16 +699,16 @@
         "sender_domain_not_official"
       ],
       "seconds": [
-        24.41,
-        26.57
+        25.33,
+        23.76
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 6.0,
+        "serpapi_searches": 3.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 6.0
+        "vertex_calls": 5.0
       },
       "stages": {
         "ingest": "degraded",
@@ -769,16 +741,16 @@
       ],
       "signals": [],
       "seconds": [
-        29.68,
-        18.57
+        20.88,
+        29.07
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
         "nutrient_calls": 2.0,
-        "serpapi_searches": 0.0,
+        "serpapi_searches": 3.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 4.0
+        "vertex_calls": 5.0
       },
       "stages": {
         "ingest": "degraded",
@@ -813,8 +785,8 @@
         "entity_not_found"
       ],
       "seconds": [
-        26.77,
-        25.34
+        23.82,
+        21.79
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -825,7 +797,7 @@
         "vertex_calls": 6.0
       },
       "stages": {
-        "ingest": "completed",
+        "ingest": "degraded",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -857,8 +829,8 @@
         "sender_domain_not_official"
       ],
       "seconds": [
-        35.23,
-        42.67
+        53.06,
+        24.56
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -901,8 +873,8 @@
         "sender_domain_not_official"
       ],
       "seconds": [
-        31.73,
-        23.81
+        25.84,
+        28.64
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -946,8 +918,8 @@
         "sender_domain_unregistered"
       ],
       "seconds": [
-        20.62,
-        21.22
+        36.96,
+        28.39
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -955,7 +927,7 @@
         "serpapi_searches": 0.0,
         "namecom_lookups": 48.0,
         "namecom_calls": 2.0,
-        "vertex_calls": 4.0
+        "vertex_calls": 5.0
       },
       "stages": {
         "ingest": "completed",
@@ -981,16 +953,17 @@
       ],
       "stable": true,
       "scores": [
-        0.65,
+        1.0,
         1.0
       ],
       "signals": [
+        "bank_details_changed",
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
       "seconds": [
-        32.61,
-        32.58
+        45.65,
+        33.67
       ],
       "cost_accumulated": {
         "nutrient_credits": 10.0,
@@ -1017,12 +990,10 @@
     {
       "case_id": "legit-clean-01",
       "pass_index": 1,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 68.38,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 34.84,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1035,27 +1006,25 @@
       "errors": [],
       "provider_errors": [],
       "budget_violations": [],
-      "identity_from_memo": false,
+      "identity_from_memo": true,
       "signature_denied": true,
       "reused_prior_assessment": false,
       "cost": {
         "nutrient_credits": 5.0,
         "nutrient_calls": 1,
-        "serpapi_searches": 3,
+        "serpapi_searches": 0,
         "namecom_lookups": 24,
         "namecom_calls": 1,
-        "vertex_calls": 3
+        "vertex_calls": 2
       }
     },
     {
       "case_id": "legit-clean-02",
       "pass_index": 1,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 32.96,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 34.98,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1083,12 +1052,10 @@
     {
       "case_id": "legit-clean-03",
       "pass_index": 1,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 34.46,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 30.42,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1116,12 +1083,10 @@
     {
       "case_id": "legit-clean-04",
       "pass_index": 1,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 38.22,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 34.59,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1134,28 +1099,27 @@
       "errors": [],
       "provider_errors": [],
       "budget_violations": [],
-      "identity_from_memo": true,
+      "identity_from_memo": false,
       "signature_denied": true,
       "reused_prior_assessment": false,
       "cost": {
         "nutrient_credits": 5.0,
         "nutrient_calls": 1,
-        "serpapi_searches": 0,
+        "serpapi_searches": 3,
         "namecom_lookups": 24,
         "namecom_calls": 1,
-        "vertex_calls": 2
+        "vertex_calls": 3
       }
     },
     {
       "case_id": "legit-billing-subdomain",
       "pass_index": 1,
-      "level": "high",
-      "score": 0.8,
+      "level": "review",
+      "score": 0.35,
       "signals": [
-        "bank_details_changed",
         "confusable_already_registered"
       ],
-      "seconds": 32.62,
+      "seconds": 35.21,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1188,7 +1152,7 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 22.62,
+      "seconds": 24.54,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1221,7 +1185,7 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 26.11,
+      "seconds": 29.03,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1254,9 +1218,9 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 28.24,
+      "seconds": 30.52,
       "stages": {
-        "ingest": "completed",
+        "ingest": "degraded",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -1287,7 +1251,7 @@
       "signals": [
         "bank_details_changed"
       ],
-      "seconds": 28.25,
+      "seconds": 25.86,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1321,9 +1285,9 @@
         "bank_details_changed",
         "confusable_already_registered"
       ],
-      "seconds": 27.01,
+      "seconds": 24.6,
       "stages": {
-        "ingest": "degraded",
+        "ingest": "completed",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -1352,7 +1316,7 @@
       "level": "clear",
       "score": 0,
       "signals": [],
-      "seconds": 24.6,
+      "seconds": 25.02,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1383,7 +1347,7 @@
       "level": "clear",
       "score": 0,
       "signals": [],
-      "seconds": 23.02,
+      "seconds": 23.75,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1414,7 +1378,7 @@
       "level": "clear",
       "score": 0,
       "signals": [],
-      "seconds": 20.83,
+      "seconds": 23.96,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1448,42 +1412,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 24.41,
-      "stages": {
-        "ingest": "degraded",
-        "identity": "failed",
-        "domain": "completed",
-        "risk": "completed",
-        "generation": "skipped",
-        "delivery": "skipped",
-        "persistence": "completed"
-      },
-      "errors": [
-        "identity: CounterpartyModelError: the model returned an empty response"
-      ],
-      "provider_errors": [
-        "serpapi: CounterpartyModelError: the model returned an empty response"
-      ],
-      "budget_violations": [],
-      "identity_from_memo": false,
-      "signature_denied": true,
-      "reused_prior_assessment": false,
-      "cost": {
-        "nutrient_credits": 5.0,
-        "nutrient_calls": 1,
-        "serpapi_searches": 3,
-        "namecom_lookups": 24,
-        "namecom_calls": 1,
-        "vertex_calls": 3
-      }
-    },
-    {
-      "case_id": "legit-sibling-tld-control",
-      "pass_index": 1,
-      "level": "clear",
-      "score": 0,
-      "signals": [],
-      "seconds": 29.68,
+      "seconds": 25.33,
       "stages": {
         "ingest": "degraded",
         "identity": "failed",
@@ -1513,6 +1442,41 @@
       }
     },
     {
+      "case_id": "legit-sibling-tld-control",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 20.88,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
       "case_id": "legit-first-time-supplier",
       "pass_index": 1,
       "level": "review",
@@ -1520,7 +1484,7 @@
       "signals": [
         "entity_not_found"
       ],
-      "seconds": 26.77,
+      "seconds": 23.82,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1555,9 +1519,9 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 35.23,
+      "seconds": 53.06,
       "stages": {
-        "ingest": "completed",
+        "ingest": "degraded",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -1577,7 +1541,7 @@
         "serpapi_searches": 0,
         "namecom_lookups": 24,
         "namecom_calls": 1,
-        "vertex_calls": 2
+        "vertex_calls": 3
       }
     },
     {
@@ -1590,7 +1554,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 31.73,
+      "seconds": 25.84,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1626,7 +1590,7 @@
         "sender_domain_not_official",
         "sender_domain_unregistered"
       ],
-      "seconds": 20.62,
+      "seconds": 36.96,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1648,19 +1612,20 @@
         "serpapi_searches": 0,
         "namecom_lookups": 24,
         "namecom_calls": 1,
-        "vertex_calls": 2
+        "vertex_calls": 3
       }
     },
     {
       "case_id": "fraud-subdomain-lure",
       "pass_index": 1,
       "level": "high",
-      "score": 0.65,
+      "score": 1.0,
       "signals": [
+        "bank_details_changed",
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 32.61,
+      "seconds": 45.65,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1688,12 +1653,10 @@
     {
       "case_id": "legit-clean-01",
       "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 39.09,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 36.78,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1721,45 +1684,10 @@
     {
       "case_id": "legit-clean-02",
       "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 35.62,
-      "stages": {
-        "ingest": "completed",
-        "identity": "completed",
-        "domain": "completed",
-        "risk": "completed",
-        "generation": "skipped",
-        "delivery": "skipped",
-        "persistence": "completed"
-      },
-      "errors": [],
-      "provider_errors": [],
-      "budget_violations": [],
-      "identity_from_memo": false,
-      "signature_denied": true,
-      "reused_prior_assessment": false,
-      "cost": {
-        "nutrient_credits": 5.0,
-        "nutrient_calls": 1,
-        "serpapi_searches": 3,
-        "namecom_lookups": 24,
-        "namecom_calls": 1,
-        "vertex_calls": 3
-      }
-    },
-    {
-      "case_id": "legit-clean-03",
-      "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 33.72,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 33.8,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1785,16 +1713,45 @@
       }
     },
     {
-      "case_id": "legit-clean-04",
+      "case_id": "legit-clean-03",
       "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 40.42,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 37.97,
       "stages": {
         "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-clean-04",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 31.35,
+      "stages": {
+        "ingest": "completed",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -1820,13 +1777,12 @@
     {
       "case_id": "legit-billing-subdomain",
       "pass_index": 2,
-      "level": "high",
-      "score": 0.8,
+      "level": "review",
+      "score": 0.35,
       "signals": [
-        "bank_details_changed",
         "confusable_already_registered"
       ],
-      "seconds": 33.44,
+      "seconds": 34.68,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1859,7 +1815,7 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 28.7,
+      "seconds": 34.47,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -1892,7 +1848,7 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 31.09,
+      "seconds": 22.31,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1925,7 +1881,7 @@
       "signals": [
         "confusable_already_registered"
       ],
-      "seconds": 24.96,
+      "seconds": 29.07,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -1953,22 +1909,22 @@
     {
       "case_id": "legit-bank-change",
       "pass_index": 2,
-      "level": null,
-      "score": null,
-      "signals": [],
-      "seconds": 67.74,
+      "level": "review",
+      "score": 0.45,
+      "signals": [
+        "bank_details_changed"
+      ],
+      "seconds": 25.98,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
         "domain": "completed",
-        "risk": "failed",
+        "risk": "completed",
         "generation": "skipped",
         "delivery": "skipped",
         "persistence": "completed"
       },
-      "errors": [
-        "risk: ServerError: 504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}"
-      ],
+      "errors": [],
       "provider_errors": [],
       "budget_violations": [],
       "identity_from_memo": true,
@@ -1992,7 +1948,7 @@
         "bank_details_changed",
         "confusable_already_registered"
       ],
-      "seconds": 29.71,
+      "seconds": 25.7,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -2023,7 +1979,7 @@
       "level": "clear",
       "score": 0,
       "signals": [],
-      "seconds": 22.16,
+      "seconds": 25.99,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -2051,12 +2007,10 @@
     {
       "case_id": "legit-mixed-case-sender",
       "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 21.17,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 24.07,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -2084,12 +2038,10 @@
     {
       "case_id": "legit-second-in-month",
       "pass_index": 2,
-      "level": "review",
-      "score": 0.45,
-      "signals": [
-        "bank_details_changed"
-      ],
-      "seconds": 22.65,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 25.62,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
@@ -2123,7 +2075,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 26.57,
+      "seconds": 23.76,
       "stages": {
         "ingest": "degraded",
         "identity": "failed",
@@ -2158,7 +2110,7 @@
       "level": "clear",
       "score": 0,
       "signals": [],
-      "seconds": 18.57,
+      "seconds": 29.07,
       "stages": {
         "ingest": "degraded",
         "identity": "failed",
@@ -2195,9 +2147,9 @@
       "signals": [
         "entity_not_found"
       ],
-      "seconds": 25.34,
+      "seconds": 21.79,
       "stages": {
-        "ingest": "completed",
+        "ingest": "degraded",
         "identity": "completed",
         "domain": "completed",
         "risk": "completed",
@@ -2230,7 +2182,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 42.67,
+      "seconds": 24.56,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -2252,7 +2204,7 @@
         "serpapi_searches": 0,
         "namecom_lookups": 24,
         "namecom_calls": 1,
-        "vertex_calls": 3
+        "vertex_calls": 2
       }
     },
     {
@@ -2265,7 +2217,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 23.81,
+      "seconds": 28.64,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -2301,7 +2253,7 @@
         "sender_domain_not_official",
         "sender_domain_unregistered"
       ],
-      "seconds": 21.22,
+      "seconds": 28.39,
       "stages": {
         "ingest": "completed",
         "identity": "completed",
@@ -2336,7 +2288,7 @@
         "confusable_already_registered",
         "sender_domain_not_official"
       ],
-      "seconds": 32.58,
+      "seconds": 33.67,
       "stages": {
         "ingest": "degraded",
         "identity": "completed",
