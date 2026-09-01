@@ -401,3 +401,24 @@ Gastados 2 sobres de los 25 en diagnóstico. Quedan 23.
 La aritmética del riesgo es determinista, así que la varianza viene de la etapa de
 identidad (que sale `degraded`) alimentando distintas señales. Hay que estabilizarlo antes
 de grabar: un demo que a veces dice HIGH y a veces REVIEW no se puede enseñar.
+
+## 2026-09-01 — Huecos cerrados antes del jurado
+
+**Entrada por prompt plano.** El brief de Foxit pide un agente que empieza en un prompt;
+recibir un PDF y un RunConfig no es eso, alguien ya hizo el pensamiento. `agents/planner.py`
+lee la instrucción, determinista primero. **Nunca adivina el dominio oficial** a partir del
+nombre de la empresa: ese valor se convierte en la vara con la que se mide todo lo demás, y
+uno inventado validaría en silencio la suplantación que existe para detectar.
+
+**La PII sí llega al modelo.** El README lo negaba y `nutrient_redact_pii` existía sin que
+nadie lo llamara. Ahora los identificadores se enmascaran en el prompt —el mapeador necesita
+la forma de una línea, no sus dígitos— y el valor real se lee del span por regla. El IBAN
+salió del modelo por completo. Tres tests codificaban el comportamiento viejo.
+
+**La tabla `vendors` se escribía casi vacía.** Yo creé el esquema antes de que existiera el
+constructor de filas, y Xano descarta campos desconocidos en silencio: solo aterrizaban
+`legal_name` y `official_domain`. Añadidas las diez columnas que el código escribe de verdad.
+La fila ahora lleva veredicto, score, titular y timestamp.
+
+Lección repetida por cuarta vez: **un hecho que una regla puede decidir, entregado al
+modelo, se decide distinto entre corridas o no se decide.**
