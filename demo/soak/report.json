@@ -1,0 +1,3051 @@
+{
+  "context": {
+    "passes": 3,
+    "wait_seconds": 90.0,
+    "concurrency": 1,
+    "corpus": {
+      "cases": 20,
+      "legitimate": 16,
+      "fraudulent": 4
+    },
+    "audit_sink": "memory",
+    "reuse_disabled": true,
+    "closed_seams": [
+      "generation",
+      "delivery"
+    ],
+    "serpapi_cap": 36,
+    "serpapi_spent": 27,
+    "serpapi_live_verifications": 9,
+    "serpapi_memo_hits": 51,
+    "estimate": {
+      "runs": 60,
+      "passes": 3,
+      "cases_per_pass": 20,
+      "distinct_counterparties": 3,
+      "nutrient_credits": 300.0,
+      "serpapi_searches_max": 27,
+      "namecom_lookups": 1500,
+      "vertex_calls_min": 180,
+      "foxit_envelopes": 0,
+      "render_credits": 0
+    },
+    "prices": {
+      "nutrient_credits_per_run": 5.0,
+      "nutrient_quote_live": true,
+      "serpapi_searches_left": 238,
+      "serpapi_quote_error": null
+    },
+    "git_head": "b23e78f"
+  },
+  "false_positives": {
+    "legitimate_runs": 48,
+    "legitimate_runs_with_verdict": 47,
+    "false_positive_rate": 0.4894,
+    "false_positives": "23/47",
+    "blocking_false_positive_rate": 0.1277,
+    "blocking_false_positives": "6/47",
+    "flagged_legitimate_cases": [
+      "legit-accounts-subdomain",
+      "legit-bank-change",
+      "legit-bank-change-subdomain",
+      "legit-billing-subdomain",
+      "legit-billing-subdomain-credit",
+      "legit-billing-subdomain-renewal",
+      "legit-first-time-supplier",
+      "legit-sibling-tld"
+    ],
+    "blocked_legitimate_cases": [
+      "legit-bank-change-subdomain",
+      "legit-sibling-tld"
+    ]
+  },
+  "detection": {
+    "fraudulent_runs": 12,
+    "detection_rate": 1.0,
+    "detected_high": "11/11",
+    "flagged_at_all": "11/11",
+    "missed_cases": []
+  },
+  "stability": {
+    "level_stable": "18/20",
+    "signal_set_stable": "18/20",
+    "cases_that_moved": [
+      "fraud-subdomain-lure",
+      "legit-billing-subdomain"
+    ],
+    "cases_whose_signals_moved": [
+      "fraud-subdomain-lure",
+      "legit-billing-subdomain"
+    ]
+  },
+  "latency": {
+    "runs": 60,
+    "p50_seconds": 25.2,
+    "p95_seconds": 42.8,
+    "max_seconds": 46.7,
+    "mean_seconds": 26.1,
+    "p50_by_pass": {
+      "1": 23.8,
+      "2": 25.7,
+      "3": 24.0
+    },
+    "p95_by_pass": {
+      "1": 42.8,
+      "2": 46.7,
+      "3": 34.8
+    }
+  },
+  "providers": {
+    "stage_status": {
+      "delivery": {
+        "skipped": 60
+      },
+      "domain": {
+        "completed": 60
+      },
+      "generation": {
+        "skipped": 60
+      },
+      "identity": {
+        "completed": 54,
+        "failed": 6
+      },
+      "ingest": {
+        "completed": 36,
+        "degraded": 24
+      },
+      "persistence": {
+        "completed": 60
+      },
+      "risk": {
+        "completed": 58,
+        "failed": 2
+      }
+    },
+    "provider_faults": {
+      "serpapi": 6
+    },
+    "degraded_or_failed_stages": 32,
+    "runs_without_verdict": 2
+  },
+  "cost": {
+    "total": {
+      "namecom_calls": 60,
+      "namecom_lookups": 1440,
+      "nutrient_calls": 60,
+      "nutrient_credits": 300.0,
+      "serpapi_searches": 27,
+      "vertex_calls": 132
+    },
+    "per_expediente": {
+      "namecom_calls": 1.0,
+      "namecom_lookups": 24.0,
+      "nutrient_calls": 1.0,
+      "nutrient_credits": 5.0,
+      "serpapi_searches": 0.45,
+      "vertex_calls": 2.2
+    },
+    "identity_served_from_memo": 51
+  },
+  "boundary": {
+    "signature_denied": "60/60",
+    "generation_or_envelope_seams_reached": 0,
+    "runs_answered_from_a_prior_assessment": 0,
+    "budget_violations": []
+  },
+  "cases": [
+    {
+      "case_id": "legit-clean-01",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        42.81,
+        46.74,
+        34.77
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 9.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 9.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the vendor's own domain and no bank change: the baseline of the set"
+    },
+    {
+      "case_id": "legit-clean-02",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        32.35,
+        25.69,
+        23.83
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the same shape a month later, to see whether a clean run stays clean"
+    },
+    {
+      "case_id": "legit-clean-03",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        22.25,
+        22.85,
+        21.44
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a small renewal, because not every legitimate invoice is a large one"
+    },
+    {
+      "case_id": "legit-clean-04",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        26.15,
+        30.01,
+        23.2
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a large one, in case size alone moves the verdict"
+    },
+    {
+      "case_id": "legit-billing-subdomain",
+      "truth": "legitimate",
+      "sender_domain": "invoices.name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        null,
+        "review",
+        "review"
+      ],
+      "stable": false,
+      "scores": [
+        null,
+        0.35,
+        0.35
+      ],
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": [
+        9.53,
+        26.01,
+        26.0
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "risk: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}"
+      ],
+      "why": "the vendor's own billing namespace: the false positive the sentinel exists to avoid"
+    },
+    {
+      "case_id": "legit-billing-subdomain-renewal",
+      "truth": "legitimate",
+      "sender_domain": "invoices.name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "review",
+        "review",
+        "review"
+      ],
+      "stable": true,
+      "scores": [
+        0.35,
+        0.35,
+        0.35
+      ],
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": [
+        21.54,
+        24.43,
+        24.39
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the same namespace with different content, so the pass is not one document twice"
+    },
+    {
+      "case_id": "legit-accounts-subdomain",
+      "truth": "legitimate",
+      "sender_domain": "accounts.name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "review",
+        "review",
+        "review"
+      ],
+      "stable": true,
+      "scores": [
+        0.35,
+        0.35,
+        0.35
+      ],
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": [
+        24.48,
+        25.9,
+        25.24
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a second subdomain, because vendors do not send everything from one host"
+    },
+    {
+      "case_id": "legit-billing-subdomain-credit",
+      "truth": "legitimate",
+      "sender_domain": "billing.name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "review",
+        "review",
+        "review"
+      ],
+      "stable": true,
+      "scores": [
+        0.35,
+        0.35,
+        0.35
+      ],
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": [
+        25.66,
+        25.24,
+        31.08
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a third subdomain on a credit note, the thinnest legitimate document here"
+    },
+    {
+      "case_id": "legit-bank-change",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        "review",
+        "review",
+        "review"
+      ],
+      "stable": true,
+      "scores": [
+        0.45,
+        0.45,
+        0.45
+      ],
+      "signals": [
+        "bank_details_changed"
+      ],
+      "seconds": [
+        28.31,
+        32.02,
+        21.68
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the supplier really did move bank and says so: the most expensive false positive"
+    },
+    {
+      "case_id": "legit-bank-change-subdomain",
+      "truth": "legitimate",
+      "sender_domain": "invoices.name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        "high",
+        "high",
+        "high"
+      ],
+      "stable": true,
+      "scores": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered"
+      ],
+      "seconds": [
+        28.09,
+        30.43,
+        26.05
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the same honest change from the billing namespace, to separate the two causes"
+    },
+    {
+      "case_id": "legit-no-remittance-block",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        21.36,
+        21.02,
+        23.48
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "an invoice that prints no account at all, so nothing about the bank is knowable"
+    },
+    {
+      "case_id": "legit-mixed-case-sender",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        22.45,
+        22.18,
+        23.88
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "the domain printed as Name.com: casing must not turn a vendor into a stranger"
+    },
+    {
+      "case_id": "legit-second-in-month",
+      "truth": "legitimate",
+      "sender_domain": "name.com",
+      "official_domain": "name.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        20.5,
+        22.31,
+        22.83
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a second invoice inside one billing period, the ordinary case of repetition"
+    },
+    {
+      "case_id": "legit-sibling-tld",
+      "truth": "legitimate",
+      "sender_domain": "google.net",
+      "official_domain": "google.com",
+      "bank_change_announced": false,
+      "levels": [
+        "high",
+        "high",
+        "high"
+      ],
+      "stable": true,
+      "scores": [
+        0.65,
+        0.65,
+        0.65
+      ],
+      "signals": [
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": [
+        40.15,
+        26.15,
+        26.6
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 9.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 9.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "why": "google.net is registered to the owner of google.com; a sibling TLD the vendor holds"
+    },
+    {
+      "case_id": "legit-sibling-tld-control",
+      "truth": "legitimate",
+      "sender_domain": "google.com",
+      "official_domain": "google.com",
+      "bank_change_announced": false,
+      "levels": [
+        "clear",
+        "clear",
+        "clear"
+      ],
+      "stable": true,
+      "scores": [
+        0,
+        0,
+        0
+      ],
+      "signals": [],
+      "seconds": [
+        18.07,
+        25.48,
+        19.74
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "why": "the same vendor from its official domain, so the sibling case has a control"
+    },
+    {
+      "case_id": "legit-first-time-supplier",
+      "truth": "legitimate",
+      "sender_domain": "verdantledger.com",
+      "official_domain": "verdantledger.com",
+      "bank_change_announced": false,
+      "levels": [
+        "review",
+        "review",
+        "review"
+      ],
+      "stable": true,
+      "scores": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "signals": [
+        "entity_not_found"
+      ],
+      "seconds": [
+        36.23,
+        25.34,
+        24.14
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 9.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 9.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "a first invoice from a supplier with no history: newness must not read as risk"
+    },
+    {
+      "case_id": "fraud-homoglyph",
+      "truth": "fraud",
+      "sender_domain": "narne.com",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        "high",
+        "high",
+        "high"
+      ],
+      "stable": true,
+      "scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": [
+        26.25,
+        43.79,
+        24.11
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 7.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "rn for m, registered by somebody: the classic BEC lure"
+    },
+    {
+      "case_id": "fraud-hyphen",
+      "truth": "fraud",
+      "sender_domain": "na-me.com",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        "high",
+        "high",
+        "high"
+      ],
+      "stable": true,
+      "scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": [
+        23.79,
+        27.41,
+        24.0
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "hyphen insertion, already taken"
+    },
+    {
+      "case_id": "fraud-unregistered",
+      "truth": "fraud",
+      "sender_domain": "nane.com",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        "high",
+        "high",
+        "high"
+      ],
+      "stable": true,
+      "scores": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official",
+        "sender_domain_unregistered"
+      ],
+      "seconds": [
+        19.66,
+        25.71,
+        22.28
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 6.0
+      },
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "why": "an invoice from a domain nobody owns is worse, not better"
+    },
+    {
+      "case_id": "fraud-subdomain-lure",
+      "truth": "fraud",
+      "sender_domain": "name.com.billing-invoices.co",
+      "official_domain": "name.com",
+      "bank_change_announced": true,
+      "levels": [
+        null,
+        "high",
+        "high"
+      ],
+      "stable": false,
+      "scores": [
+        null,
+        1.0,
+        1.0
+      ],
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": [
+        9.69,
+        39.17,
+        32.83
+      ],
+      "cost_accumulated": {
+        "nutrient_credits": 15.0,
+        "nutrient_calls": 3.0,
+        "serpapi_searches": 0.0,
+        "namecom_lookups": 72.0,
+        "namecom_calls": 3.0,
+        "vertex_calls": 8.0
+      },
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "risk: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}"
+      ],
+      "why": "name.com appears in full, as a label of somebody else's registrable domain"
+    }
+  ],
+  "runs": [
+    {
+      "case_id": "legit-clean-01",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 42.81,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-clean-02",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 32.35,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-03",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.25,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-04",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 26.15,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain",
+      "pass_index": 1,
+      "level": null,
+      "score": null,
+      "signals": [],
+      "seconds": 9.53,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "failed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "risk: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}"
+      ],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-renewal",
+      "pass_index": 1,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 21.54,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-accounts-subdomain",
+      "pass_index": 1,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 24.48,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-credit",
+      "pass_index": 1,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 25.66,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change",
+      "pass_index": 1,
+      "level": "review",
+      "score": 0.45,
+      "signals": [
+        "bank_details_changed"
+      ],
+      "seconds": 28.31,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change-subdomain",
+      "pass_index": 1,
+      "level": "high",
+      "score": 0.8,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered"
+      ],
+      "seconds": 28.09,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-no-remittance-block",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 21.36,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-mixed-case-sender",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.45,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-second-in-month",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 20.5,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld",
+      "pass_index": 1,
+      "level": "high",
+      "score": 0.65,
+      "signals": [
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 40.15,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld-control",
+      "pass_index": 1,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 18.07,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-first-time-supplier",
+      "pass_index": 1,
+      "level": "review",
+      "score": 0.3,
+      "signals": [
+        "entity_not_found"
+      ],
+      "seconds": 36.23,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "fraud-homoglyph",
+      "pass_index": 1,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 26.25,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-hyphen",
+      "pass_index": 1,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 23.79,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-unregistered",
+      "pass_index": 1,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official",
+        "sender_domain_unregistered"
+      ],
+      "seconds": 19.66,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-subdomain-lure",
+      "pass_index": 1,
+      "level": null,
+      "score": null,
+      "signals": [],
+      "seconds": 9.69,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "failed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "risk: ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.', 'status': 'RESOURCE_EXHAUSTED'}}"
+      ],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-01",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 46.74,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-clean-02",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 25.69,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-03",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.85,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-04",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 30.01,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 26.01,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-renewal",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 24.43,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-accounts-subdomain",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 25.9,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-credit",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 25.24,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.45,
+      "signals": [
+        "bank_details_changed"
+      ],
+      "seconds": 32.02,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change-subdomain",
+      "pass_index": 2,
+      "level": "high",
+      "score": 0.8,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered"
+      ],
+      "seconds": 30.43,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-no-remittance-block",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 21.02,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-mixed-case-sender",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.18,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-second-in-month",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.31,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld",
+      "pass_index": 2,
+      "level": "high",
+      "score": 0.65,
+      "signals": [
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 26.15,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld-control",
+      "pass_index": 2,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 25.48,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-first-time-supplier",
+      "pass_index": 2,
+      "level": "review",
+      "score": 0.3,
+      "signals": [
+        "entity_not_found"
+      ],
+      "seconds": 25.34,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "fraud-homoglyph",
+      "pass_index": 2,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 43.79,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "fraud-hyphen",
+      "pass_index": 2,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 27.41,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-unregistered",
+      "pass_index": 2,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official",
+        "sender_domain_unregistered"
+      ],
+      "seconds": 25.71,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-subdomain-lure",
+      "pass_index": 2,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 39.17,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-clean-01",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 34.77,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-clean-02",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 23.83,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-03",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 21.44,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-clean-04",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 23.2,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 26.0,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-renewal",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 24.39,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-accounts-subdomain",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 25.24,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-billing-subdomain-credit",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.35,
+      "signals": [
+        "confusable_already_registered"
+      ],
+      "seconds": 31.08,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.45,
+      "signals": [
+        "bank_details_changed"
+      ],
+      "seconds": 21.68,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-bank-change-subdomain",
+      "pass_index": 3,
+      "level": "high",
+      "score": 0.8,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered"
+      ],
+      "seconds": 26.05,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-no-remittance-block",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 23.48,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-mixed-case-sender",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 23.88,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-second-in-month",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 22.83,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld",
+      "pass_index": 3,
+      "level": "high",
+      "score": 0.65,
+      "signals": [
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 26.6,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "legit-sibling-tld-control",
+      "pass_index": 3,
+      "level": "clear",
+      "score": 0,
+      "signals": [],
+      "seconds": 19.74,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "failed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [
+        "identity: CounterpartyModelError: the model returned an empty response"
+      ],
+      "provider_errors": [
+        "serpapi: CounterpartyModelError: the model returned an empty response"
+      ],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "legit-first-time-supplier",
+      "pass_index": 3,
+      "level": "review",
+      "score": 0.3,
+      "signals": [
+        "entity_not_found"
+      ],
+      "seconds": 24.14,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": false,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 3,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    },
+    {
+      "case_id": "fraud-homoglyph",
+      "pass_index": 3,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 24.11,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-hyphen",
+      "pass_index": 3,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 24.0,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-unregistered",
+      "pass_index": 3,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official",
+        "sender_domain_unregistered"
+      ],
+      "seconds": 22.28,
+      "stages": {
+        "ingest": "completed",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 2
+      }
+    },
+    {
+      "case_id": "fraud-subdomain-lure",
+      "pass_index": 3,
+      "level": "high",
+      "score": 1.0,
+      "signals": [
+        "bank_details_changed",
+        "confusable_already_registered",
+        "sender_domain_not_official"
+      ],
+      "seconds": 32.83,
+      "stages": {
+        "ingest": "degraded",
+        "identity": "completed",
+        "domain": "completed",
+        "risk": "completed",
+        "generation": "skipped",
+        "delivery": "skipped",
+        "persistence": "completed"
+      },
+      "errors": [],
+      "provider_errors": [],
+      "budget_violations": [],
+      "identity_from_memo": true,
+      "signature_denied": true,
+      "reused_prior_assessment": false,
+      "cost": {
+        "nutrient_credits": 5.0,
+        "nutrient_calls": 1,
+        "serpapi_searches": 0,
+        "namecom_lookups": 24,
+        "namecom_calls": 1,
+        "vertex_calls": 3
+      }
+    }
+  ]
+}

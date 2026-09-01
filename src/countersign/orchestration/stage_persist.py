@@ -12,8 +12,10 @@ so the last row of every run is the run's own decision to write itself down.
 
 from typing import Any
 
+from autocurricula.schemas.common import utc_now
 from autocurricula.tools.base import ToolResult
 
+from countersign.orchestration.baseline import baseline_columns, baseline_configured
 from countersign.orchestration.gate import HARNESS_ID, authorize, guarded
 from countersign.orchestration.sink import TraceSink
 from countersign.orchestration.stages import Stage, skipped
@@ -80,7 +82,26 @@ def vendor_row(state: RunState) -> dict[str, Any]:
         "recommended_action": verdict.recommended_action if verdict is not None else "",
         "decided_at": verdict.decided_at if verdict is not None else "",
         "skipped_stages": [entry.stage.value for entry in state.skipped],
+        **_bank_file(state),
     }
+
+
+def _bank_file(state: RunState) -> dict[str, str]:
+    """The account this run saw, so the next run has something to compare against.
+
+    Only the fingerprint is stored, never the account. A vendor acquires a file
+    the first time an invoice from them is assessed, which is what turns the
+    bank-change signal from a phrase match into a comparison.
+    """
+    invoice = state.invoice
+    if invoice is None or invoice.iban is None or not baseline_configured():
+        return {}
+    verdict = state.verdict
+    at = verdict.decided_at if verdict is not None else utc_now().isoformat()
+    try:
+        return baseline_columns(invoice.iban.value, at)
+    except Exception:
+        return {}
 
 
 __all__ = ["AUDIT_TOOL", "VENDOR_TOOL", "run_persistence", "vendor_row"]

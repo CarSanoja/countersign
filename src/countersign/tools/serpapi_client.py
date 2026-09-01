@@ -6,6 +6,9 @@ money rather than data. Retries are therefore deliberately absent.
 
 The key travels in the URL, not in a header, so it is redacted out of every
 error string before it can reach a log.
+
+Nothing here decides which Google market to search. That belongs to the address
+on the invoice, not to the transport, and lives in serpapi_locale.
 """
 
 import os
@@ -20,9 +23,6 @@ DEFAULT_BASE_URL = "https://serpapi.com"
 SEARCH_PATH = "/search.json"
 ACCOUNT_PATH = "/account.json"
 REQUEST_TIMEOUT_SECONDS = 25.0
-DEFAULT_COUNTRY = "es"
-DEFAULT_LANGUAGE = "es"
-DEFAULT_GOOGLE_DOMAIN = "google.es"
 MAX_ERROR_BODY_CHARS = 400
 KEY_HELP_URL = "https://serpapi.com/manage-api-key"
 

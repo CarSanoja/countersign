@@ -30,7 +30,7 @@ from countersign.agents.risk_weights import (
     distinct_kinds,
     level_for,
     recommended_action,
-    score_of,
+    score_of_signals,
     weight_for,
 )
 from countersign.fleet.roster import RISK_SYNTHESIZER_ID
@@ -148,7 +148,7 @@ def assemble_verdict(
             failures,
         )
     signals = _merge_established(bundle, _signals_from(draft, bundle))
-    level = level_for(score_of(signal.kind for signal in signals))
+    level = level_for(score_of_signals(signals))
     return Verdict(
         run_id=bundle.run_id,
         level=level,

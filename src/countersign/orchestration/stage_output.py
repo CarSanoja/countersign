@@ -14,6 +14,7 @@ from typing import Any
 
 from countersign.agents.risk_synthesizer import UngroundedVerdictError
 from countersign.fleet.roster import DOCUMENT_DRAFTER_ID, ENVELOPE_PREPARER_ID
+from countersign.orchestration.baseline import BaselineUnavailable, baseline_configured, known_bank
 from countersign.orchestration.evidence import build_bundle
 from countersign.orchestration.gate import guarded, refuse
 from countersign.orchestration.stages import Stage, skipped
@@ -25,6 +26,25 @@ PREPARE_TOOL = "foxit_prepare_envelope"
 SIGNATURE_TOOL = "foxit_execute_signature"
 
 
+async def _vendor_file(state: RunState):
+    """The vendor's account on file, when there is one to read.
+
+    Absence is the common case and not an error: a vendor we have never seen has
+    no file, and the signal says exactly that rather than pretending the account
+    is wrong. A store that is unreachable is treated the same way, because a
+    verdict that silently depends on a lookup having succeeded is worse than one
+    that says it could not check.
+    """
+    if not baseline_configured() or not state.legal_name:
+        return None
+    try:
+        return await known_bank(state.legal_name)
+    except BaselineUnavailable:
+        return None
+    except Exception:
+        return None
+
+
 async def run_risk(state: RunState) -> None:
     """Fuse the collected evidence into a verdict, or refuse to produce one."""
     bundle = build_bundle(
@@ -33,6 +53,7 @@ async def run_risk(state: RunState) -> None:
         invoice=state.invoice,
         assessment=state.assessment,
         sweep=state.sweep,
+        baseline=await _vendor_file(state),
     )
     if bundle is None:
         state.skip(

@@ -11,20 +11,49 @@ Degradation is per provider. A missing key costs the stage that needs it and
 nothing else: the stage is recorded as skipped, naming the variable, and the run
 continues with one less input. The verdict a partial run reaches is still
 grounded in what was actually collected, and the caller can see the gap.
+
+The seventh thing a run does is decide whether to run at all. A document whose
+bytes have already been assessed is answered from that assessment instead of
+being pushed through the four providers and a second signature envelope, and
+that decision is written down the same way a skipped stage is: six omissions,
+each naming the run being quoted. Reuse is a choice this pipeline takes on the
+record, never a duplicate silently avoided.
 """
 
 from autocurricula.schemas.common import utc_now
 
+from countersign.fleet.roster import ENVELOPE_PREPARER_ID
+from countersign.orchestration.gate import HARNESS_ID, guarded, refuse
+from countersign.orchestration.idempotency import PriorRun, content_key, index_row, previous_run
 from countersign.orchestration.ports import AssessmentPorts, RunConfig
 from countersign.orchestration.result import AssessmentResult
 from countersign.orchestration.sink import TraceSink, XanoTraceSink
 from countersign.orchestration.stage_input import run_domain, run_identity, run_ingest
-from countersign.orchestration.stage_output import run_delivery, run_generation, run_risk
-from countersign.orchestration.stage_persist import run_persistence
+from countersign.orchestration.stage_output import (
+    SIGNATURE_TOOL,
+    run_delivery,
+    run_generation,
+    run_risk,
+)
+from countersign.orchestration.stage_persist import VENDOR_TOOL, run_persistence
+from countersign.orchestration.stages import Stage, skipped
 from countersign.orchestration.state import RunState
 from countersign.orchestration.trace import RunTrace
+from countersign.schemas.verdict import Verdict
+from countersign.tools.xano import xano_persist_vendor
 
 RUN_ID_PREFIX = "countersign"
+
+REUSED_STAGES: tuple[Stage, ...] = (
+    Stage.INGEST,
+    Stage.IDENTITY,
+    Stage.DOMAIN,
+    Stage.RISK,
+    Stage.GENERATION,
+    Stage.DELIVERY,
+)
+"""The six that cost something. Persistence is not among them: a reused run
+still writes its own row and its own trace, or the reuse would leave no record."""
 
 
 async def run_assessment(
@@ -34,6 +63,7 @@ async def run_assessment(
     config: RunConfig | None = None,
     ports: AssessmentPorts | None = None,
     sink: TraceSink | None = None,
+    reuse: bool = True,
 ) -> AssessmentResult:
     """Assess one document end to end and return the verdict, the trace and the gaps.
 
@@ -48,10 +78,16 @@ async def run_assessment(
         config: what the document cannot say, such as the template and the signer.
         ports: the six seams, live where not overridden.
         sink: where the trace is persisted; Xano when not overridden.
+        reuse: answer from an assessment already on file for these exact bytes
+            rather than assessing them again. Off means the world is re-checked
+            on the same content, which is a caller's decision and not a default,
+            because the accidental case — a retry, a resend, a double click —
+            wants one envelope in front of the signer, not two.
 
     Returns:
         AssessmentResult carrying the Verdict when one was reached, the full
-        trace of gate decisions, and the stages that were omitted with the reason.
+        trace of gate decisions, the stages that were omitted with the reason,
+        and, when nothing was re-run, the earlier run it was quoted from.
     """
     if not document_ref.strip():
         raise ValueError("a run needs a document reference to assess")
@@ -65,14 +101,74 @@ async def run_assessment(
         trace=RunTrace(identifier),
         started_at=started_at,
     )
+    key = content_key(state.document_ref)
+    prior = await previous_run(key) if reuse and key else None
+    if prior is None:
+        await _assess(state, key)
+    else:
+        _quote(state, prior)
+    await run_persistence(state, sink if sink is not None else XanoTraceSink())
+    return _result(state, key, prior)
+
+
+async def _assess(state: RunState, key: str) -> None:
+    """Spend the providers, then leave the content key behind for the next run."""
     await run_ingest(state)
     await run_identity(state)
     await run_domain(state)
     await run_risk(state)
     await run_generation(state)
     await run_delivery(state)
-    await run_persistence(state, sink if sink is not None else XanoTraceSink())
-    return _result(state)
+    verdict = state.verdict
+    if key and verdict is not None:
+        await _record_key(state, key, verdict)
+
+
+async def _record_key(state: RunState, key: str, verdict: Verdict) -> None:
+    """Index this assessment by the bytes it assessed. Written before the trace is.
+
+    The row goes out through the same gate as any other vendor write, and it goes
+    out before persistence rather than after, so its decision is inside the trace
+    persistence then writes rather than appended to a ledger already closed.
+    """
+    row = index_row(
+        key,
+        state.run_id,
+        state.document_ref,
+        verdict,
+        legal_name=state.legal_name,
+        official_domain=state.official_domain,
+    )
+    try:
+        written = await guarded(
+            state.trace, HARNESS_ID, VENDOR_TOOL, lambda: xano_persist_vendor(row)
+        )
+    except Exception as error:
+        state.errors.append(f"idempotency: {type(error).__name__}: {error}")
+        return
+    if not written.ok:
+        state.errors.append(
+            f"idempotency: the content key was not recorded, so a rerun of this document "
+            f"will be assessed again: {written.error}"
+        )
+
+
+def _quote(state: RunState, prior: PriorRun) -> None:
+    """Adopt an earlier verdict and record, six times, that nothing was re-run.
+
+    The signature is still asked for and still refused. A run that skipped every
+    stage would otherwise be the one run in which the boundary this product is
+    built on leaves no evidence of holding.
+    """
+    state.verdict = prior.verdict
+    reason = (
+        f"reused the assessment of {prior.summary} under content key "
+        f"{prior.document_key}: the bytes are identical, so the six stages that spend "
+        "something were not run and this retry raised no second signature envelope"
+    )
+    for stage in REUSED_STAGES:
+        state.skip(skipped(stage, reason))
+    refuse(state.trace, ENVELOPE_PREPARER_ID, SIGNATURE_TOOL)
 
 
 def _generated_run_id(started_at: str) -> str:
@@ -80,7 +176,7 @@ def _generated_run_id(started_at: str) -> str:
     return f"{RUN_ID_PREFIX}-{stamp}"
 
 
-def _result(state: RunState) -> AssessmentResult:
+def _result(state: RunState, key: str, prior: PriorRun | None) -> AssessmentResult:
     return AssessmentResult(
         run_id=state.run_id,
         document_ref=state.document_ref,
@@ -94,7 +190,9 @@ def _result(state: RunState) -> AssessmentResult:
         envelope=state.envelope,
         trace_persisted=state.trace_persisted,
         errors=list(state.errors),
+        document_key=key,
+        reused_from=prior,
     )
 
 
-__all__ = ["RUN_ID_PREFIX", "run_assessment"]
+__all__ = ["REUSED_STAGES", "RUN_ID_PREFIX", "run_assessment"]

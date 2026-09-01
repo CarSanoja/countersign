@@ -3,6 +3,11 @@ what has been published about them.
 
 Both require the capability "web.search" and neither mutates external state.
 Each call spends one SerpApi credit.
+
+The market is a parameter, not a constant: which google_domain, gl and hl a
+search runs under decides which corpus the identity judgement is made on, and
+that follows the invoiced address. The defaults here are the documented
+fallback of serpapi_locale, used when the caller knows no better.
 """
 
 import re
@@ -10,13 +15,8 @@ import re
 from autocurricula.tools.base import ToolResult
 
 from countersign.tools import serpapi_parsers as parse
-from countersign.tools.serpapi_client import (
-    DEFAULT_COUNTRY,
-    DEFAULT_GOOGLE_DOMAIN,
-    DEFAULT_LANGUAGE,
-    SEARCH_PATH,
-    serpapi_get,
-)
+from countersign.tools.serpapi_client import SEARCH_PATH, serpapi_get
+from countersign.tools.serpapi_locale import FALLBACK_LOCALE
 from countersign.tools.serpapi_models import AdverseMediaEvidence, OfficialSiteEvidence
 
 DEFAULT_WHEN_WINDOW = "2y"
@@ -50,9 +50,9 @@ def _adverse_clause() -> str:
 
 async def serpapi_find_official_site(
     legal_name: str,
-    country_code: str = DEFAULT_COUNTRY,
-    language: str = DEFAULT_LANGUAGE,
-    google_domain: str = DEFAULT_GOOGLE_DOMAIN,
+    country_code: str = FALLBACK_LOCALE.country_code,
+    language: str = FALLBACK_LOCALE.language,
+    google_domain: str = FALLBACK_LOCALE.google_domain,
     extra_terms: str = "",
 ) -> ToolResult:
     """Find the counterparty's official web presence on Google.
@@ -88,8 +88,8 @@ async def serpapi_find_official_site(
 
 async def serpapi_adverse_media(
     legal_name: str,
-    country_code: str = DEFAULT_COUNTRY,
-    language: str = DEFAULT_LANGUAGE,
+    country_code: str = FALLBACK_LOCALE.country_code,
+    language: str = FALLBACK_LOCALE.language,
     when_window: str = DEFAULT_WHEN_WINDOW,
 ) -> ToolResult:
     """Search Google News for litigation, insolvency and fraud coverage.

@@ -5,9 +5,10 @@ service does is render a dossier, and a judge pasting the bare URL lands on the
 example rather than on a 404.
 """
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, Depends, FastAPI
 from fastapi.responses import RedirectResponse
 
+from countersign.api.auth import require_bearer_token
 from countersign.api.dossier import dossier_router
 from countersign.api.responses import HealthResponse
 
@@ -32,7 +33,7 @@ async def root() -> RedirectResponse:
 def create_app() -> FastAPI:
     application = FastAPI(title=APP_TITLE, version=APP_VERSION)
     application.include_router(health_router)
-    application.include_router(dossier_router)
+    application.include_router(dossier_router, dependencies=[Depends(require_bearer_token)])
     return application
 
 

@@ -3,6 +3,12 @@
 Google Maps answers in two hops: a search finds the listing, and only a lookup
 by place_id carries the website, the phone and the opening state. The second
 hop is opt-in because it costs a second credit.
+
+The language comes from the invoiced address through serpapi_locale, because a
+Denver listing read in Spanish is the wrong listing read twice. Only hl is sent:
+whether engine=google_maps honours gl and google_domain was never confirmed
+against a live response, and an unverified parameter on a paid call is a guess
+that costs a credit. The address text carries the country in the query itself.
 """
 
 from typing import Any
@@ -10,7 +16,8 @@ from typing import Any
 from autocurricula.tools.base import ToolResult
 
 from countersign.tools import serpapi_parsers as parse
-from countersign.tools.serpapi_client import DEFAULT_LANGUAGE, SEARCH_PATH, serpapi_get
+from countersign.tools.serpapi_client import SEARCH_PATH, serpapi_get
+from countersign.tools.serpapi_locale import FALLBACK_LOCALE
 from countersign.tools.serpapi_models import AddressEvidence
 from countersign.tools.serpapi_search import quoted_entity
 
@@ -23,7 +30,7 @@ MAX_PLACES = 10
 async def serpapi_verify_address(
     legal_name: str,
     address: str,
-    language: str = DEFAULT_LANGUAGE,
+    language: str = FALLBACK_LOCALE.language,
     latitude: float | None = None,
     longitude: float | None = None,
     zoom: int = DEFAULT_MAPS_ZOOM,

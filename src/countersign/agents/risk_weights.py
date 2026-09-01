@@ -13,7 +13,7 @@ lowering its own confidence would be deciding the risk after all.
 from collections.abc import Iterable
 
 from countersign.schemas.evidence import Provider
-from countersign.schemas.verdict import RiskLevel, SignalKind
+from countersign.schemas.verdict import RiskLevel, RiskSignal, SignalKind
 
 SIGNAL_WEIGHTS: dict[SignalKind, float] = {
     SignalKind.BANK_DETAILS_CHANGED: 0.45,
@@ -87,6 +87,23 @@ def distinct_kinds(kinds: Iterable[SignalKind]) -> list[SignalKind]:
 
 def score_of(kinds: Iterable[SignalKind]) -> float:
     return min(1.0, sum(weight_for(kind) for kind in distinct_kinds(kinds)))
+
+
+def score_of_signals(signals: "Iterable[RiskSignal]") -> float:
+    """Total the signals by their own weight, not by their kind's table value.
+
+    Two signals can share a kind and mean very different things: "this account
+    is not the one on file" and "we have no file for this vendor yet" are both
+    BANK_DETAILS_CHANGED, and scoring the second like the first would push every
+    first-time vendor to review. The heaviest signal of each kind wins, so a
+    weak reading never inflates a strong one and duplicates never double count.
+    """
+    heaviest: dict[SignalKind, float] = {}
+    for signal in signals:
+        current = heaviest.get(signal.kind)
+        if current is None or signal.weight > current:
+            heaviest[signal.kind] = signal.weight
+    return min(1.0, sum(heaviest.values()))
 
 
 def level_for(score: float) -> RiskLevel:

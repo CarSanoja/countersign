@@ -40,9 +40,8 @@ from countersign.agents.counterparty_model import (
 from countersign.agents.counterparty_prompt import SYSTEM_PROMPT, build_user_prompt
 from countersign.schemas.evidence import Claim
 from countersign.schemas.verdict import RiskSignal
+from countersign.tools.serpapi_locale import SearchLocale, locale_for_address
 
-DEFAULT_COUNTRY = "es"
-DEFAULT_LANGUAGE = "es"
 DEFAULT_WHEN_WINDOW = "2y"
 JUDGEMENT_ATTEMPTS = 2
 
@@ -65,6 +64,7 @@ class CounterpartyAssessment(StrictBaseModel):
     dismissed_namesakes: list[Claim] = Field(default_factory=list)
     summary: str = ""
     searches_spent: int = 0
+    search_locale: SearchLocale | None = None
     assessed_at: str = Field(min_length=1)
     errors: list[str] = Field(default_factory=list)
 
@@ -80,11 +80,15 @@ async def verify_counterparty(
     *,
     model: CounterpartyModelClient | None = None,
     searches: CounterpartySearches | None = None,
-    country_code: str = DEFAULT_COUNTRY,
-    language: str = DEFAULT_LANGUAGE,
+    locale: SearchLocale | None = None,
     when_window: str = DEFAULT_WHEN_WINDOW,
 ) -> CounterpartyAssessment:
-    """Verify one counterparty for three SerpApi credits and one judgement."""
+    """Verify one counterparty for three SerpApi credits and one judgement.
+
+    The Google market is read off the invoiced address unless the caller names
+    one, because the same three searches run in the wrong country answer about
+    a different company, and the assessment records which market that was.
+    """
     at = utc_now().isoformat()
     name = legal_name.strip()
     if not name:
@@ -92,22 +96,24 @@ async def verify_counterparty(
     denials = search_denials()
     if denials:
         return _failed(name, address, at, denials)
+    market = locale if locale is not None else locale_for_address(address)
     evidence = await gather_evidence(
         name,
         address,
         searches if searches is not None else SerpApiSearches(),
-        country_code=country_code,
-        language=language,
+        locale=market,
         when_window=when_window,
     )
     if not evidence.anything_retrieved:
-        return _failed(name, address, at, evidence.errors, evidence.searches_spent)
+        return _failed(name, address, at, evidence.errors, evidence.searches_spent, market)
     try:
         judgement = await _judge(name, address, evidence, model or VertexCounterpartyModel())
     except (CounterpartyModelError, ValueError) as error:
         reason = f"{type(error).__name__}: {error}"
-        return _failed(name, address, at, [*evidence.errors, reason], evidence.searches_spent)
-    return _assemble(name, address, evidence, judgement, at)
+        return _failed(
+            name, address, at, [*evidence.errors, reason], evidence.searches_spent, market
+        )
+    return _assemble(name, address, evidence, judgement, at, market)
 
 
 async def _judge(
@@ -137,6 +143,7 @@ def _assemble(
     evidence: CounterpartyEvidence,
     judgement: CounterpartyJudgement,
     at: str,
+    locale: SearchLocale,
 ) -> CounterpartyAssessment:
     site_claims, site_signals, domain, site_errors = official_site_findings(
         legal_name, judgement, evidence, at
@@ -159,19 +166,26 @@ def _assemble(
         dismissed_namesakes=dismissed,
         summary=judgement.summary,
         searches_spent=evidence.searches_spent,
+        search_locale=locale,
         assessed_at=at,
         errors=errors,
     )
 
 
 def _failed(
-    legal_name: str, address: str, at: str, errors: list[str], spent: int = 0
+    legal_name: str,
+    address: str,
+    at: str,
+    errors: list[str],
+    spent: int = 0,
+    locale: SearchLocale | None = None,
 ) -> CounterpartyAssessment:
     return CounterpartyAssessment(
         legal_name=legal_name,
         address=address,
         status=AssessmentStatus.FAILED,
         searches_spent=spent,
+        search_locale=locale,
         assessed_at=at,
         errors=errors or ["the counterparty could not be verified"],
     )

@@ -14,6 +14,11 @@ from countersign.agents.document_extractor import ExtractedInvoice
 from countersign.agents.document_extractor_fields import InvoiceField
 from countersign.agents.risk_evidence import EvidenceBundle, EvidenceChannel, EvidenceItem
 from countersign.agents.risk_weights import SIGNAL_WEIGHTS
+from countersign.orchestration.baseline import (
+    VendorBaseline,
+    bank_signal,
+    baseline_configured,
+)
 from countersign.orchestration.domain_sweep import DomainSweep
 from countersign.schemas.evidence import Claim, Provider, SourceRef
 from countersign.schemas.verdict import RiskSignal, SignalKind
@@ -26,6 +31,11 @@ OCCUPIED = (
 SENDER_FREE = (
     "{sender} is the domain the invoice was sent from and it is not registered "
     "in the {environment} registry."
+)
+ANNOUNCED = (
+    "The document announces new bank details ({phrase!r}). No vendor file is "
+    "configured on this instance, so this rests on what the document says about "
+    "itself and not on a comparison against the account on record."
 )
 
 
@@ -156,39 +166,32 @@ def build_bundle(
     invoice: ExtractedInvoice | None = None,
     assessment: CounterpartyAssessment | None = None,
     sweep: DomainSweep | None = None,
+    baseline: VendorBaseline | None = None,
 ) -> EvidenceBundle | None:
-    """Assemble the index, or None when no stage produced anything citable."""
+    """Assemble the index, or None when no stage produced anything citable.
+
+    `baseline` is the vendor's file as `baseline.known_bank` read it, and is
+    passed in rather than fetched here so this stays a pure function of what the
+    stages collected: the one network read the bank comparison needs belongs to
+    the caller that already owns the run's credentials and its trace.
+    """
+    at = utc_now().isoformat()
     items: list[EvidenceItem] = []
     required: list[SignalKind] = []
     established: list[RiskSignal] = []
     suppressed: list[SignalKind] = []
     if invoice is not None:
         items.extend(extraction_items(invoice))
-        if invoice.bank_change is not None:
-            established.append(
-                RiskSignal(
-                    kind=SignalKind.BANK_DETAILS_CHANGED,
-                    weight=SIGNAL_WEIGHTS[SignalKind.BANK_DETAILS_CHANGED],
-                    claim=Claim(
-                        statement=(
-                            "The document announces new bank details "
-                            f"({invoice.bank_change.value!r}), so the account this "
-                            "invoice directs payment to is not the one on file."
-                        ),
-                        sources=[invoice.bank_change.source],
-                        confidence=1.0,
-                    ),
-                )
-            )
+        bank = _bank_signal(invoice, baseline, at)
+        if bank is not None:
+            established.append(bank)
     if assessment is not None and assessment.usable_for_verdict:
         items.extend(verification_items(assessment))
         established.extend(assessment.signals)
     if sweep is not None:
         items.extend(sweep_items(sweep))
         required = sweep.established_signals()
-        established.extend(
-            _established_signals(sweep, utc_now().isoformat(), _official_source(assessment))
-        )
+        established.extend(_established_signals(sweep, at, _official_source(assessment)))
         if sweep.sender_domain and sweep.sender_domain == sweep.official_domain:
             suppressed.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
     if not items:
@@ -200,6 +203,32 @@ def build_bundle(
         required_signals=[kind for kind in required if _backed(kind, items)],
         established_signals=established,
         suppressed_signals=suppressed,
+    )
+
+
+def _bank_signal(
+    invoice: ExtractedInvoice, baseline: VendorBaseline | None, at: str
+) -> RiskSignal | None:
+    """The comparison where a vendor file exists, the phrase where none can.
+
+    The fallback is kept because an instance with no Xano credentials still has
+    to say something about a document announcing new bank details, and the phrase
+    match is all there is. It is the degraded answer and never the preferred one:
+    it reports what the sender chose to write, which is exactly the thing an
+    attacker controls.
+    """
+    if baseline_configured():
+        return bank_signal(invoice, baseline, at)
+    if invoice.bank_change is None:
+        return None
+    return RiskSignal(
+        kind=SignalKind.BANK_DETAILS_CHANGED,
+        weight=SIGNAL_WEIGHTS[SignalKind.BANK_DETAILS_CHANGED],
+        claim=Claim(
+            statement=ANNOUNCED.format(phrase=invoice.bank_change.value),
+            sources=[invoice.bank_change.source],
+            confidence=1.0,
+        ),
     )
 
 

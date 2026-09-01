@@ -13,6 +13,7 @@ through the real gate in `probes`.
 
 import asyncio
 import json
+import os
 import pathlib
 import sys
 import time
@@ -151,7 +152,20 @@ def grounding_rows(rows: list[dict]) -> dict[str, object]:
     return board
 
 
+def _isolate_from_vendor_state() -> None:
+    """Measure the verdict logic, not the accumulated vendor files.
+
+    Once a vendor acquires a file the bank signal correctly falls silent, so a
+    benchmark that shares state with earlier runs stops being reproducible and
+    starts measuring history. Vendor state is a real behaviour and it belongs in
+    the soak test, which runs over time on purpose; here it is held out so the
+    same six invoices always score the same.
+    """
+    os.environ.pop("COUNTERSIGN_BASELINE_SALT", None)
+
+
 async def main() -> None:
+    _isolate_from_vendor_state()
     gathered = await asyncio.gather(
         *(assess(case.case_id) for case in CASES for _ in range(REPEATS))
     )

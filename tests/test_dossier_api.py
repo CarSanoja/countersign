@@ -10,13 +10,18 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
+from countersign.api.auth import API_TOKEN_ENV
 from countersign.api.dossier_sample import SampleUnavailable, load_sample, sample_path
 from countersign.api.main import app
 
+TOKEN = "a-token-only-the-deployment-knows"
+
 
 @pytest.fixture
-def client() -> TestClient:
-    return TestClient(app)
+def client(monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    """The dossier routes are behind a bearer token; these tests are about the renderer."""
+    monkeypatch.setenv(API_TOKEN_ENV, TOKEN)
+    return TestClient(app, headers={"Authorization": f"Bearer {TOKEN}"})
 
 
 def test_the_bare_url_lands_on_the_demo(client: TestClient) -> None:

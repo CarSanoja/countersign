@@ -7,6 +7,10 @@ quietly make the check cost four.
 
 The backend is a protocol so a test can answer with a captured response instead
 of spending a credit to prove that parsing works.
+
+The market those three searches run in travels with them. It is derived from the
+invoiced address rather than fixed, because a SERP taken in the wrong market is
+not weaker evidence about the counterparty, it is evidence about someone else.
 """
 
 import asyncio
@@ -19,6 +23,7 @@ from pydantic import Field
 from countersign.agents.capability_gate import gate
 from countersign.fleet.roster import COUNTERPARTY_VERIFIER_ID, grants
 from countersign.tools.serpapi_address import serpapi_verify_address
+from countersign.tools.serpapi_locale import SearchLocale
 from countersign.tools.serpapi_models import (
     AddressEvidence,
     AdverseMediaEvidence,
@@ -50,45 +55,46 @@ class CounterpartySearches(Protocol):
     """The read-only half of SerpApi, narrowed to what a counterparty needs."""
 
     async def find_official_site(
-        self, *, legal_name: str, country_code: str, language: str
+        self, *, legal_name: str, locale: SearchLocale
     ) -> ToolResult: ...
 
     async def adverse_media(
-        self, *, legal_name: str, country_code: str, language: str, when_window: str
+        self, *, legal_name: str, locale: SearchLocale, when_window: str
     ) -> ToolResult: ...
 
     async def verify_address(
-        self, *, legal_name: str, address: str, language: str
+        self, *, legal_name: str, address: str, locale: SearchLocale
     ) -> ToolResult: ...
 
 
 class SerpApiSearches:
     """The live backend. One credit each, and the second Maps hop never fires."""
 
-    async def find_official_site(
-        self, *, legal_name: str, country_code: str, language: str
-    ) -> ToolResult:
+    async def find_official_site(self, *, legal_name: str, locale: SearchLocale) -> ToolResult:
         return await serpapi_find_official_site(
-            legal_name=legal_name, country_code=country_code, language=language
+            legal_name=legal_name,
+            country_code=locale.country_code,
+            language=locale.language,
+            google_domain=locale.google_domain,
         )
 
     async def adverse_media(
-        self, *, legal_name: str, country_code: str, language: str, when_window: str
+        self, *, legal_name: str, locale: SearchLocale, when_window: str
     ) -> ToolResult:
         return await serpapi_adverse_media(
             legal_name=legal_name,
-            country_code=country_code,
-            language=language,
+            country_code=locale.country_code,
+            language=locale.language,
             when_window=when_window,
         )
 
     async def verify_address(
-        self, *, legal_name: str, address: str, language: str
+        self, *, legal_name: str, address: str, locale: SearchLocale
     ) -> ToolResult:
         return await serpapi_verify_address(
             legal_name=legal_name,
             address=address,
-            language=language,
+            language=locale.language,
             fetch_place_details=False,
         )
 
@@ -123,23 +129,17 @@ async def gather_evidence(
     address: str,
     searches: CounterpartySearches,
     *,
-    country_code: str,
-    language: str,
+    locale: SearchLocale,
     when_window: str,
 ) -> CounterpartyEvidence:
     """Spend the budget once, concurrently, and record what each hop cost."""
     address_query = address.strip()
     results = await asyncio.gather(
-        searches.find_official_site(
-            legal_name=legal_name, country_code=country_code, language=language
-        ),
+        searches.find_official_site(legal_name=legal_name, locale=locale),
         searches.adverse_media(
-            legal_name=legal_name,
-            country_code=country_code,
-            language=language,
-            when_window=when_window,
+            legal_name=legal_name, locale=locale, when_window=when_window
         ),
-        _address_or_skip(searches, legal_name, address_query, language),
+        _address_or_skip(searches, legal_name, address_query, locale),
         return_exceptions=True,
     )
     evidence = CounterpartyEvidence(searches_spent=SEARCH_BUDGET if address_query else 2)
@@ -153,12 +153,12 @@ async def gather_evidence(
 
 
 async def _address_or_skip(
-    searches: CounterpartySearches, legal_name: str, address: str, language: str
+    searches: CounterpartySearches, legal_name: str, address: str, locale: SearchLocale
 ) -> ToolResult:
     if not address:
         return ToolResult.failure("no address to verify")
     return await searches.verify_address(
-        legal_name=legal_name, address=address, language=language
+        legal_name=legal_name, address=address, locale=locale
     )
 
 

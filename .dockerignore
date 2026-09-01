@@ -1,0 +1,23 @@
+# Deny by default. The build context is an allowlist, so a credential file added
+# to this repo next week cannot walk into a published layer on its own — someone
+# has to name it below first.
+*
+
+!pyproject.toml
+!README.md
+!src
+
+**/__pycache__
+**/*.py[cod]
+**/.DS_Store
+
+# Named again on purpose. These are the files that would turn a pushed image
+# into a credential leak, and the last matching rule wins — so they stay out
+# even if the allowlist above is ever widened.
+.env
+.env.local
+.env.*
+.gcloud
+docs/CLAVES.md
+.venv
+.git
