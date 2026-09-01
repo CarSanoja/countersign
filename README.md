@@ -45,6 +45,28 @@ hidden:
 
 `tests/test_boundary.py` fails if anyone ever grants an agent the power to sign.
 
+## Measured, not asserted
+
+Six labelled invoices, every sender domain's registration status checked against
+the production registry, two runs each. `demo/benchmark/measure.py` reproduces
+this end to end against live APIs.
+
+| Metric | Result | Why it is the metric |
+|---|---|---|
+| Verdict accuracy | **6/6** | including the two negatives: a real invoice must come back clear |
+| Reproducibility | **6/6** | the same invoice twice must give the same verdict, or it cannot be trusted once |
+| Claims grounded | **28/28** | every claim cites a span; the schema rejects one that does not |
+| Fabricated source rejected | **yes** | a draft citing evidence nobody collected is refused, checked adversarially |
+| Signature denied | **12/12** | the agent asks on every run and is refused on every run |
+| Agents holding a human-only power | **0** | asserted by `tests/test_boundary.py`, not by prose |
+| Unmapped tool denied | **3/3** | the gate fails closed |
+| Median latency | **38s** | against the four minutes a person spends, and misses |
+
+The two negatives matter as much as the four positives. A control that flags
+everything gets muted: `name.com` itself has 20 of 34 confusable variants
+registered, and scoring that against an invoice that genuinely came from
+`name.com` would mark every real invoice for review.
+
 ## A real run
 
     ingest       completed  7 fields anchored
