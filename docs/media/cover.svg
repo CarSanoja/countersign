@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="COUNTERSIGN: an agent that does the vendor paperwork and is structurally unable to sign it.">
+  <rect width="1200" height="630" fill="#101822"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#93242A"/>
+
+  <text x="72" y="128" font-family="Georgia,serif" font-size="76" font-weight="bold" fill="#F2F5F8" letter-spacing="-2">COUNTER<tspan fill="#E0888C">SIGN</tspan></text>
+  <text x="76" y="164" font-family="Helvetica,Arial,sans-serif" font-size="17" fill="#7C8898" letter-spacing="3.4">VENDOR ONBOARDING · PAYMENT FRAUD CONTROL</text>
+
+  <text x="72" y="240" font-family="Georgia,serif" font-size="35" fill="#F2F5F8">An agent does the whole vendor file, and is</text>
+  <text x="72" y="286" font-family="Georgia,serif" font-size="35" fill="#E0888C">structurally unable to sign it or pay it.</text>
+  <text x="72" y="330" font-family="Helvetica,Arial,sans-serif" font-size="20" fill="#93A0AF">Your team keeps the decision — and finally gets a record of what was checked.</text>
+
+  <line x1="72" y1="372" x2="1128" y2="372" stroke="#2A3542" stroke-width="1"/>
+
+  <g font-family="Helvetica,Arial,sans-serif">
+    <text x="72" y="424" font-size="42" font-weight="bold" fill="#E0888C">$3.05B</text>
+    <text x="72" y="450" font-size="15" fill="#93A0AF">lost to business email</text>
+    <text x="72" y="470" font-size="15" fill="#93A0AF">compromise in 2025</text>
+    <text x="72" y="494" font-size="12.5" fill="#5F6B7A">FBI IC3 · 2nd crime type by loss</text>
+
+    <text x="336" y="424" font-size="42" font-weight="bold" fill="#E0888C">74%</text>
+    <text x="336" y="450" font-size="15" fill="#93A0AF">of organisations were</text>
+    <text x="336" y="470" font-size="15" fill="#93A0AF">hit last year</text>
+    <text x="336" y="494" font-size="12.5" fill="#5F6B7A">AFP Payments Fraud Survey</text>
+
+    <text x="600" y="424" font-size="42" font-weight="bold" fill="#F2F5F8">$123,005</text>
+    <text x="600" y="450" font-size="15" fill="#93A0AF">median loss, per</text>
+    <text x="600" y="470" font-size="15" fill="#93A0AF">single incident</text>
+    <text x="600" y="494" font-size="12.5" fill="#5F6B7A">24,768 reported cases</text>
+
+    <text x="864" y="424" font-size="42" font-weight="bold" fill="#F2F5F8">40s</text>
+    <text x="864" y="450" font-size="15" fill="#93A0AF">to assess an invoice,</text>
+    <text x="864" y="470" font-size="15" fill="#93A0AF">against four minutes</text>
+    <text x="864" y="494" font-size="12.5" fill="#5F6B7A">and it does not get bored</text>
+  </g>
+
+  <rect x="72" y="530" width="1056" height="62" fill="#181F2B" stroke="#3A2226" stroke-width="1"/>
+  <text x="96" y="558" font-family="Courier New,monospace" font-size="16" fill="#7C8898">seq=5  envelope-preparer   foxit_execute_signature</text>
+  <text x="612" y="558" font-family="Courier New,monospace" font-size="16" font-weight="bold" fill="#FF9AA0">DENY</text>
+  <text x="96" y="580" font-family="Helvetica,Arial,sans-serif" font-size="13.5" fill="#5F6B7A">The agent asks to sign on every run. It is refused on every run, and the refusal is written down.</text>
+</svg>

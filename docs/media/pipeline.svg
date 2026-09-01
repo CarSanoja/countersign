@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 340" width="1180" height="340" role="img" aria-label="Seven stages run automatically and produce a dossier; the dossier crosses the capability boundary and the power to sign does not.">
+  <rect width="1180" height="340" fill="#FFFFFF"/>
+
+  <text x="24" y="30" font-family="Helvetica,Arial,sans-serif" font-size="13" letter-spacing="2.2" fill="#8A94A0">AUTOMATIC · ~40 SECONDS · EVERY STEP CITES ITS SOURCE</text>
+  <text x="946" y="30" font-family="Helvetica,Arial,sans-serif" font-size="13" letter-spacing="2.2" fill="#93242A">PEOPLE ONLY</text>
+
+  <g fill="#F7F8FA" stroke="#C7CFD8" stroke-width="1.4">
+    <rect x="24" y="48" width="152" height="92" rx="2"/>
+    <rect x="200" y="48" width="152" height="92" rx="2"/>
+    <rect x="376" y="48" width="152" height="92" rx="2"/>
+    <rect x="552" y="48" width="152" height="92" rx="2"/>
+    <rect x="728" y="48" width="152" height="92" rx="2"/>
+  </g>
+
+  <g font-family="Helvetica,Arial,sans-serif" text-anchor="middle">
+    <g font-size="16" font-weight="bold" fill="#16202B">
+      <text x="100" y="76">Ingest</text><text x="276" y="76">Identity</text>
+      <text x="452" y="76">Domain</text><text x="628" y="76">Risk</text><text x="804" y="76">Generate</text>
+    </g>
+    <g font-size="12.5" fill="#4E5A69">
+      <text x="100" y="99">fields with the page</text><text x="100" y="116">and box they came from</text>
+      <text x="276" y="99">same legal entity,</text><text x="276" y="116">or a namesake?</text>
+      <text x="452" y="99">40 confusables across</text><text x="452" y="116">8 attack classes</text>
+      <text x="628" y="99">a verdict where every</text><text x="628" y="116">claim cites its span</text>
+      <text x="804" y="99">the out-of-band bank</text><text x="804" y="116">verification document</text>
+    </g>
+    <g font-size="11" fill="#8A94A0">
+      <text x="100" y="133">Nutrient</text><text x="276" y="133">SerpApi</text>
+      <text x="452" y="133">name.com</text><text x="628" y="133">deterministic + Gemini</text><text x="804" y="133">Foxit PDF Services</text>
+    </g>
+  </g>
+
+  <g stroke="#4E5A69" stroke-width="1.6">
+    <path d="M178 94 L196 94" marker-end="url(#g)"/><path d="M354 94 L372 94" marker-end="url(#g)"/>
+    <path d="M530 94 L548 94" marker-end="url(#g)"/><path d="M706 94 L724 94" marker-end="url(#g)"/>
+  </g>
+  <defs>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4E5A69"/></marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#93242A"/></marker>
+  </defs>
+
+  <line x1="924" y1="40" x2="924" y2="320" stroke="#93242A" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="934" y="316" font-family="Helvetica,Arial,sans-serif" font-size="12.5" font-weight="bold" fill="#93242A">CAPABILITY BOUNDARY</text>
+
+  <rect x="960" y="48" width="196" height="92" rx="2" fill="#FBF6F6" stroke="#93242A" stroke-width="1.8"/>
+  <text x="1058" y="76" font-family="Helvetica,Arial,sans-serif" font-size="16" font-weight="bold" fill="#16202B" text-anchor="middle">A person signs</text>
+  <text x="1058" y="99" font-family="Helvetica,Arial,sans-serif" font-size="12.5" fill="#4E5A69" text-anchor="middle">envelope prepared,</text>
+  <text x="1058" y="116" font-family="Helvetica,Arial,sans-serif" font-size="12.5" fill="#4E5A69" text-anchor="middle">left in DRAFT, unsent</text>
+  <text x="1058" y="133" font-family="Helvetica,Arial,sans-serif" font-size="11" fill="#8A94A0" text-anchor="middle">Foxit eSign</text>
+
+  <path d="M882 94 L956 94" stroke="#4E5A69" stroke-width="1.6" marker-end="url(#g)"/>
+  <text x="924" y="86" font-family="Helvetica,Arial,sans-serif" font-size="12" fill="#4E5A69" text-anchor="middle">the file crosses</text>
+
+  <path d="M804 144 L804 200 L900 200" fill="none" stroke="#93242A" stroke-width="1.8" marker-end="url(#r)"/>
+  <g stroke="#93242A" stroke-width="2.6">
+    <line x1="912" y1="192" x2="932" y2="210"/><line x1="932" y1="192" x2="912" y2="210"/>
+  </g>
+  <text x="804" y="228" font-family="Helvetica,Arial,sans-serif" font-size="13" font-weight="bold" fill="#93242A">the agent asks to sign, and to pay</text>
+  <text x="804" y="248" font-family="Helvetica,Arial,sans-serif" font-size="12.5" fill="#93242A">DENIED — and the attempt is written to an append-only log</text>
+
+  <rect x="24" y="268" width="856" height="46" fill="#F7F8FA" stroke="#DCE2E8" stroke-width="1"/>
+  <text x="40" y="288" font-family="Helvetica,Arial,sans-serif" font-size="12.5" font-weight="bold" fill="#16202B">Persistence · Xano</text>
+  <text x="40" y="306" font-family="Helvetica,Arial,sans-serif" font-size="12" fill="#4E5A69">Every gate decision — allowed and denied — is a row. The agent cannot rewrite its own trail: the credential carries no update or delete.</text>
+</svg>
