@@ -422,3 +422,36 @@ La fila ahora lleva veredicto, score, titular y timestamp.
 
 Lección repetida por cuarta vez: **un hecho que una regla puede decidir, entregado al
 modelo, se decide distinto entre corridas o no se decide.**
+
+## 2026-09-01 — Relectura de las bases, punto por punto
+
+Volví a la fuente en vez de a mis notas. Lo que cambió:
+
+**Correcciones a lo que tenía anotado:**
+- **SerpApi son $3.000 ($2.000 el primero)**, no $1.000. Es el segundo premio de sponsor
+  más alto y le había dado menos atención de la que merece.
+- **El vídeo es de 2–4 minutos**, no 3.
+- Existe un **pitch en el escenario principal para el Top 5**. No estaba contemplado.
+
+**El MCP de Foxit NO es obligatorio.** Su texto literal lo ofrece como recurso: "an
+open-source MCP server wraps the Foxit PDF Services API" con "40 tools for the reversible
+work". Lo obligatorio es "call the Foxit eSign API directly, with its own credentials, and
+a person has to sign it", que es exactamente lo que hacemos. No hay hueco ahí.
+
+**Entre líneas, lo que más pesa:**
+
+1. **Dos rondas concurrentes, 10:00–12:00, para cientos de proyectos.** Nadie va a clonar
+   el repo ni a leer esta bitácora. El vídeo y la elevator pitch deciden, y los primeros
+   treinta segundos deciden el vídeo.
+2. **Foxit ya usa nuestra tesis como vocabulario**: 40 herramientas "for the reversible
+   work" y la firma *intencionadamente excluida* del toolset. La distinción
+   reversible/irreversible es suya; hay que hablar en sus términos.
+3. **"Argue with us"** — invitan a defender dónde va la frontera. Premia postura, no demo.
+4. **"Progress: measurable advancement"** — esa palabra es la razón de ser del scorecard.
+5. **name.com puntúa "edge-case handling"** explícitamente. Nuestro peor defecto vivo cae
+   justo ahí: `invoices.name.com`, subdominio legítimo, puntúa igual que `narne.com`, el
+   homoglifo del atacante. Toda factura desde un subdominio de facturación se marcaría como
+   suplantación.
+
+**Repo:** verificado sin secretos en todo el historial y listo para hacerse público.
+El cambio de visibilidad lo bloquea el clasificador y lo tiene que hacer el usuario.
