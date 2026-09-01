@@ -207,7 +207,7 @@ def build_bundle(
         items.extend(sweep_items(sweep))
         required = sweep.established_signals()
         established.extend(_established_signals(sweep, at, _official_source(assessment)))
-        if sweep.sender_domain and sweep.sender_domain == sweep.official_domain:
+        if _same_registrant(sweep):
             suppressed.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
     if not items:
         return None
