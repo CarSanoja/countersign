@@ -104,6 +104,34 @@ and scoring that against an invoice that genuinely came from `name.com` would ma
 every real invoice for review. `invoices.name.com` — a vendor's own billing subdomain —
 must not score like `narne.com`, the attacker's homoglyph.
 
+### Measured over time, not just once
+
+`demo/soak/` runs a 20-invoice corpus — **16 legitimate, 4 fraudulent**, because fraud
+is rare and a balanced corpus would lie about the problem — repeatedly, and reports the
+number that decides whether a control survives in production: **how often it flags a
+real invoice**.
+
+| Over 40 runs, 2 passes | |
+|---|---|
+| False positives | **9/32** (28.1%) |
+| Would block a real payment | **2/32** (6.2%) |
+| Detection | **8/8** (100%) |
+| Verdict stability across passes | **19/20** |
+| Latency | p50 **26.3s** · p95 **42.5s** |
+
+The soak is what found the defects worth finding. The vendor file was being written
+from whatever invoice arrived first, so a supplier whose first invoice is the fraud
+would have had the attacker's account enrolled as their baseline. Billing subdomains
+were being compared to the official domain by string equality, so every legitimate
+invoice from `invoices.name.com` carried the vendor's own confusable surface as a
+finding against it.
+
+Fixing those took the false positive rate from **80.7% to 50.0% to 28.1%**.
+It is still too high to deploy, and the remaining cases are named above rather than
+tuned away: a legitimate sibling TLD is genuinely hard, because a registry cannot tell
+us whether `name.net` belongs to the same company.
+
+
 ---
 
 ## A real run
