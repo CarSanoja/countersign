@@ -7,6 +7,7 @@ are both scarce, and a run that cannot be exercised without spending either is a
 run nobody will exercise.
 """
 
+import os
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -23,6 +24,7 @@ from countersign.agents.risk_synthesizer import synthesize_verdict
 from countersign.orchestration.domain_sweep import SWEEP_LIMIT
 from countersign.schemas.verdict import Verdict
 from countersign.tools.doctavian import doctavian_generate_document
+from countersign.tools.foxit_pdf import foxit_generate_document
 from countersign.tools.namecom_availability import namecom_check_availability
 
 
@@ -134,7 +136,23 @@ async def live_synthesize(bundle: EvidenceBundle) -> Verdict:
 async def live_generate(
     template_path: str, data: dict[str, Any], document_name: str
 ) -> ToolResult:
-    return await doctavian_generate_document(
+    """Generate the counter-document, from whichever provider is configured.
+
+    Doctavian is the intended generator and the one its challenge asks for, but
+    it needs both an api key and a bearer, and half a credential is worse than
+    none: routing to it with only the key fails at the template rather than at
+    the door. Foxit PDF Services covers the same reversible work with credentials
+    already in hand, so the stage still produces the document a person signs.
+    """
+    doctavian_ready = os.environ.get("DOCTAVIAN_API_KEY", "").strip() and (
+        os.environ.get("DOCTAVIAN_ACCESS_TOKEN", "").strip()
+        or os.environ.get("DOCTAVIAN_SERVICE_TOKEN", "").strip()
+    )
+    if doctavian_ready:
+        return await doctavian_generate_document(
+            template_path=template_path, data=data, document_name=document_name
+        )
+    return await foxit_generate_document(
         template_path=template_path, data=data, document_name=document_name
     )
 

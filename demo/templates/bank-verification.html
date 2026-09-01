@@ -1,0 +1,50 @@
+<html><head><meta charset="utf-8"><style>
+body{font-family:Helvetica,Arial,sans-serif;font-size:11pt;color:#16202B;margin:48px;line-height:1.5}
+.hd{border-bottom:2px solid #16202B;padding-bottom:12px;margin-bottom:24px}
+.hd h1{font-size:17pt;margin:0}
+.hd .sub{font-size:9.5pt;color:#6B7684;margin-top:4px}
+.warn{border-left:3px solid #93242A;background:#FBF6F6;padding:14px 18px;margin:22px 0}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:10.5pt}
+td{padding:7px 0;border-bottom:1px solid #E6EAEE}
+td.k{color:#4E5A69;width:38%}
+.sig{margin-top:44px;border-top:1px solid #C7CFD8;padding-top:10px;width:62%}
+.sig .l{font-size:8.5pt;color:#6B7684}
+.ft{margin-top:34px;font-size:8.5pt;color:#8A94A0;border-top:1px solid #E6EAEE;padding-top:10px}
+</style></head><body>
+
+<div class="hd">
+  <h1>Bank detail verification — out of band</h1>
+  <div class="sub">Run {{run_id}} · prepared {{decided_at}}</div>
+</div>
+
+<p>An invoice presented as coming from <b>{{legal_name}}</b> asks for payment to an account
+that is not the one on file. This document exists so that request can be confirmed through a
+channel the sender of that invoice does not control.</p>
+
+<div class="warn">
+  <b>Do not confirm by replying to the invoice email.</b> If the sender is impersonating this
+  vendor, the reply goes to them. Call the number already held in your supplier record, not
+  one printed on the invoice.
+</div>
+
+<table>
+  <tr><td class="k">Vendor as named on the invoice</td><td>{{legal_name}}</td></tr>
+  <tr><td class="k">Sender domain</td><td>{{sender_domain}}</td></tr>
+  <tr><td class="k">Vendor's official domain</td><td>{{official_domain}}</td></tr>
+  <tr><td class="k">Assessment</td><td>{{risk_level}} — score {{risk_score}}</td></tr>
+  <tr><td class="k">Finding</td><td>{{headline}}</td></tr>
+  <tr><td class="k">Source document</td><td>{{document_ref}}</td></tr>
+</table>
+
+<p>By signing below you confirm that you contacted {{legal_name}} on a number held before this
+invoice arrived, and that they confirmed the account change.</p>
+
+<div class="sig">
+  <div class="l">Signature of the person authorising the change · date</div>
+</div>
+
+<div class="ft">
+  Prepared by COUNTERSIGN. No agent in this system may sign this document or release the
+  payment it concerns; both are reserved to a human principal, and the attempt is recorded.
+</div>
+</body></html>

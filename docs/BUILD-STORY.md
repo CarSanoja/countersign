@@ -75,6 +75,32 @@ and failed with credentials loaded.
 The lesson, stated plainly: **agents are good at building parts and bad at
 noticing that the parts do not meet.** Integration stayed hand-work.
 
+## What AI + Xano bought, together
+
+Worth separating from the general "AI made it faster" claim, because the
+acceleration here comes from the combination and not from either half.
+
+Xano's Metadata API makes the backend addressable by code: tables, columns, an
+API group and the endpoints inside it are all HTTP calls. That is what made it
+something an agent could build at all. `vendors`, `audit_log`, their fourteen
+columns, the `countersign` API group and the `GET /vendor` endpoint whose logic
+is XanoScript running inside Xano were created in minutes of calls, with nobody
+in the dashboard.
+
+The honest part is that the first attempt failed completely — all fourteen
+columns came back `000`, a zsh quoting bug in our loop, not a Xano problem —
+and the fix was to rewrite the loop in Python and run it again. That is the
+actual purchase: the schema is a script, so a mistake costs a re-run instead of
+undoing fourteen fields by hand. It paid a second time when `vendors` turned out
+to be landing nearly empty, because Xano drops unknown fields silently: the ten
+missing columns were an edit to the script, not an afternoon of clicking.
+
+What the combination did not buy is knowledge of the surface. That
+`POST /table/{id}/schema` returns 404 and `POST /table/{id}/schema/type/text`
+is the real path was found by trying, and so was the `text/x-xanoscript`
+content type on the endpoint `PUT`. Agents move fast against a documented API
+and blindly against an undocumented corner of one.
+
 ## Time saved, honestly
 
 Building the same thing solo without agent delegation: the API research alone

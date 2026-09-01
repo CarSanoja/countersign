@@ -5,6 +5,32 @@ structurally unable to sign or to pay.
 
 Built for the [DevNetwork API + Cloud + AI Hackathon 2026](https://api-cloud-ai-hackathon-2026.devpost.com/).
 
+## Measured, not asserted
+
+Six labelled invoices, every sender domain's registration status checked against
+the production registry, two runs each. `demo/benchmark/measure.py` reproduces
+this end to end against live APIs and writes `demo/benchmark/scorecard.json`.
+
+| Metric | Result | Why it is the metric |
+|---|---|---|
+| Verdict accuracy | **6/6** | including the two negatives: a real invoice must come back clear |
+| Reproducibility | **6/6** | the same invoice twice must give the same verdict, or it cannot be trusted once |
+| Claims grounded | **28/28** | every claim cites a span; the schema rejects one that does not |
+| Fabricated source rejected | **yes** | a draft citing evidence nobody collected is refused, checked adversarially |
+| Signature denied | **12/12** | the agent asks on every run and is refused on every run |
+| Agents holding a human-only power | **0** | asserted by `tests/test_boundary.py`, not by prose |
+| Unmapped tool denied | **3/3** | the gate fails closed |
+| Median latency | **39s** | against the four minutes a person spends, and misses |
+
+Two of the six are negatives, and they are the harder half: a control that flags
+every invoice is a control finance mutes. `name.com` itself has 20 of 34
+confusable variants registered, so an invoice that genuinely came from
+`name.com` still has to come back `clear`. See `docs/integrations/namecom.md`.
+
+The verdict level is measured given a known official domain. Establishing that
+domain is itself part of the run — SerpApi discovers it when it is not supplied —
+but the accuracy figure holds it fixed so the number means one thing.
+
 ## The problem
 
 Business Email Compromise moved **$3,046,598,558** in reported losses in 2025 —
@@ -31,7 +57,17 @@ Drop in an invoice. The fleet runs six stages and stops before the seventh.
 | delivery | Foxit eSign | prepares the envelope and **stops** |
 | persistence | Xano | vendors, workflow state, append-only audit log |
 
-## The claim, and why it is checkable
+## Reversible work is delegated. Irreversible work is not.
+
+The distinction is Foxit's own. Their open-source MCP server publishes 40 tools
+for the reversible work — generation, conversion, merging, compression, OCR,
+extraction — and leaves signature deliberately out of that toolset. COUNTERSIGN
+takes that line and makes it structural.
+
+Every stage above is undoable: a parse re-runs, a sweep re-runs, a verdict can
+be overturned by a person who reads the same spans, a `DRAFT` envelope can be
+deleted. A signature is not, and a payment is not — so no agent in the fleet is
+issued the power to execute either.
 
 `execute_signature` and `release_payment` are not withheld by a prompt. They are
 capabilities no agent in the fleet holds, checked in `fleet/capabilities.py`,
@@ -44,32 +80,8 @@ hidden:
     seq=5  envelope-preparer  foxit_execute_signature  deny
 
 `tests/test_boundary.py` fails if anyone ever grants an agent the power to sign.
-
-## Measured, not asserted
-
-Six labelled invoices, every sender domain's registration status checked against
-the production registry, two runs each. `demo/benchmark/measure.py` reproduces
-this end to end against live APIs.
-
-| Metric | Result | Why it is the metric |
-|---|---|---|
-| Verdict accuracy | **6/6** | including the two negatives: a real invoice must come back clear |
-| Reproducibility | **6/6** | the same invoice twice must give the same verdict, or it cannot be trusted once |
-| Claims grounded | **28/28** | every claim cites a span; the schema rejects one that does not |
-| Fabricated source rejected | **yes** | a draft citing evidence nobody collected is refused, checked adversarially |
-| Signature denied | **12/12** | the agent asks on every run and is refused on every run |
-| Agents holding a human-only power | **0** | asserted by `tests/test_boundary.py`, not by prose |
-| Unmapped tool denied | **3/3** | the gate fails closed |
-| Median latency | **39s** | against the four minutes a person spends, and misses |
-
-The verdict level is measured given a known official domain. Establishing that
-domain is itself part of the run — SerpApi discovers it when it is not supplied —
-but the accuracy figure holds it fixed so the number means one thing.
-
-The two negatives matter as much as the four positives. A control that flags
-everything gets muted: `name.com` itself has 20 of 34 confusable variants
-registered, and scoring that against an invoice that genuinely came from
-`name.com` would mark every real invoice for review.
+The argument for putting the line exactly there — and what a threshold-based
+boundary would have cost — is in `docs/integrations/foxit.md`.
 
 ## A real run
 
@@ -110,6 +122,10 @@ domain on top of it, not a fork.
 - The domain sweep answers *registered or available*, never *who owns it*. A
   taken variant may well be the vendor's own defensive registration. The signal
   is that the surface is occupied, not that anyone is an attacker.
+- The sender-to-official comparison uses a short table of compound suffixes
+  rather than the full public suffix list. Under a rarer compound suffix, or a
+  hosting suffix like `github.io`, two unrelated names can read as one
+  registrant.
 - `identity` currently reports `degraded`; entity disambiguation needs work.
 - Doctavian requires an enterprise Microsoft or Google account, so the
   generation stage runs unconfigured here.

@@ -65,6 +65,7 @@ TOOL_CAPABILITY: dict[str, str] = {
     "namecom_register_domain": CountersignCapability.DOMAIN_REGISTER,
     "namecom_create_txt_record": CountersignCapability.DOMAIN_REGISTER,
     "doctavian_generate_document": CountersignCapability.DOC_GENERATE,
+    "foxit_generate_document": CountersignCapability.DOC_GENERATE,
     "foxit_prepare_envelope": CountersignCapability.ENVELOPE_PREPARE,
     "foxit_envelope_status": CountersignCapability.ENVELOPE_READ,
     "foxit_list_prepared_envelopes": CountersignCapability.ENVELOPE_READ,

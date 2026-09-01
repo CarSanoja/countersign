@@ -24,7 +24,13 @@ from pydantic import Field
 
 from countersign.agents.document_extractor_model import LOCATION_ENV, PROJECT_ENV
 from countersign.schemas.evidence import Provider
-from countersign.tools import doctavian_client, foxit_esign_client, namecom_client, xano
+from countersign.tools import (
+    doctavian_client,
+    foxit_esign_client,
+    foxit_pdf,
+    namecom_client,
+    xano,
+)
 from countersign.tools.nutrient_client import PROCESSOR_KEY_ENV
 from countersign.tools.serpapi_client import SERPAPI_API_KEY_ENV
 
@@ -67,8 +73,15 @@ STAGE_CREDENTIALS: dict[Stage, tuple[tuple[str, ...], ...]] = {
     ),
     Stage.RISK: ((PROJECT_ENV,), (LOCATION_ENV,)),
     Stage.GENERATION: (
-        (doctavian_client.ENV_API_KEY,),
-        (doctavian_client.ENV_ACCESS_TOKEN, doctavian_client.ENV_ACCESS_TOKEN_FALLBACK),
+        (
+            doctavian_client.ENV_API_KEY,
+            foxit_pdf.ENV_CLIENT_ID,
+        ),
+        (
+            doctavian_client.ENV_ACCESS_TOKEN,
+            doctavian_client.ENV_ACCESS_TOKEN_FALLBACK,
+            foxit_pdf.ENV_CLIENT_SECRET,
+        ),
     ),
     Stage.DELIVERY: (
         (foxit_esign_client.ENV_ACCESS_TOKEN, foxit_esign_client.ENV_CLIENT_ID),

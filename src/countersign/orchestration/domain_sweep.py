@@ -7,6 +7,10 @@ one signal that survives an audit unchanged.
 Availability answers 'is this registered', never 'who owns it'. A taken variant
 may be the vendor's own defensive registration, so the finding is that the
 surface is occupied, and the wording of the evidence says exactly that.
+
+The sender is judged by its relation to the official domain, not by inequality
+with it: invoices.name.com is the vendor's own billing namespace and must not
+read like narne.com.
 """
 
 from collections.abc import Awaitable, Callable, Sequence
@@ -21,6 +25,7 @@ from countersign.domain.lookalike import (
     VariantKind,
     generate_variants,
 )
+from countersign.domain.relation import DomainRelation, classify, normalize, registrable
 from countersign.schemas.verdict import SignalKind
 
 SWEEP_LIMIT = 24
@@ -46,6 +51,7 @@ class DomainSweep(StrictBaseModel):
     unanswered: list[str] = Field(default_factory=list)
     findings: list[DomainFinding] = Field(default_factory=list)
     sender_registered: bool | None = None
+    sender_relation: DomainRelation | None = None
     swept_at: str = Field(min_length=1)
 
     @property
@@ -56,15 +62,26 @@ class DomainSweep(StrictBaseModel):
     def occupied_high_risk(self) -> list[DomainFinding]:
         return [finding for finding in self.occupied if finding.high_risk]
 
+    @property
+    def relation(self) -> DomainRelation:
+        """Classify on demand when a sweep was assembled without the relation."""
+        if self.sender_relation is not None:
+            return self.sender_relation
+        return classify(self.sender_domain, self.official_domain)
+
     def established_signals(self) -> list[SignalKind]:
-        """The kinds the registry settled without anyone having to judge them."""
-        sender_is_official = bool(self.sender_domain) and (
-            self.sender_domain == self.official_domain
-        )
+        """The kinds the registry settled without anyone having to judge them.
+
+        A sender inside the vendor's own namespace raises neither kind. Reading
+        invoices.name.com as impersonation is the false positive that would have
+        a customer switch the sentinel off, and the sweep of the surface around
+        a domain says nothing against the holder of that domain.
+        """
+        own_namespace = bool(self.sender_domain) and self.relation.same_registrant
         signals: list[SignalKind] = []
-        if self.sender_domain and self.sender_domain != self.official_domain:
+        if self.sender_domain and not own_namespace:
             signals.append(SignalKind.SENDER_DOMAIN_NOT_OFFICIAL)
-        if self.occupied_high_risk and not sender_is_official:
+        if self.occupied_high_risk and not own_namespace:
             signals.append(SignalKind.CONFUSABLE_ALREADY_REGISTERED)
         if self.sender_registered is False:
             signals.append(SignalKind.SENDER_DOMAIN_UNREGISTERED)
@@ -75,8 +92,8 @@ class DomainSweep(StrictBaseModel):
         held = len(self.occupied_high_risk)
         return {
             SignalKind.SENDER_DOMAIN_NOT_OFFICIAL: (
-                f"The invoice was sent from {self.sender_domain}, which is not "
-                f"{self.official_domain}, the vendor's official domain."
+                f"The invoice was sent from {self.sender_domain}, which "
+                f"{self.relation.description}."
             ),
             SignalKind.CONFUSABLE_ALREADY_REGISTERED: (
                 f"{held} confusable variant(s) of {self.official_domain} are already "
@@ -97,13 +114,13 @@ async def sweep_lookalikes(
     limit: int = SWEEP_LIMIT,
 ) -> tuple[DomainSweep | None, str | None]:
     """Ask the registry about the confusables, and about the sender if it differs."""
-    official = official_domain.strip().lower().rstrip(".")
+    official = normalize(official_domain)
     if not official or "." not in official:
         return None, f"{official_domain!r} is not a domain the sweep can start from"
-    sender = sender_domain.strip().lower().rstrip(".")
+    sender = normalize(sender_domain)
     variants = generate_variants(official, limit)
     names = [variant.domain_name for variant in variants]
-    if sender and sender != official and sender not in names:
+    if _answerable(sender, official) and sender not in names:
         names.append(sender)
     if not names:
         return None, f"no confusable variant could be generated for {official}"
@@ -111,6 +128,16 @@ async def sweep_lookalikes(
     if not result.ok:
         return None, result.error or "the registry returned no answer"
     return _assemble(official, sender, variants, result.payload), None
+
+
+def _answerable(sender: str, official: str) -> bool:
+    """Whether a registrar can speak about this sender at all.
+
+    Availability is a fact about a registrable name. Asking whether
+    invoices.name.com is registered has no answer, and reading a blank one as
+    'nobody owns this address' would accuse the vendor of its own subdomain.
+    """
+    return bool(sender) and sender != official and sender == registrable(sender)
 
 
 def _assemble(
@@ -133,7 +160,7 @@ def _assemble(
         if name in registered or name in available
     ]
     sender_registered: bool | None = None
-    if sender and sender != official:
+    if _answerable(sender, official):
         if sender in registered:
             sender_registered = True
         elif sender in available:
@@ -146,6 +173,7 @@ def _assemble(
         unanswered=[str(name) for name in payload.get("unanswered") or []],
         findings=findings,
         sender_registered=sender_registered,
+        sender_relation=classify(sender, official) if sender else None,
         swept_at=utc_now().isoformat(),
     )
 
