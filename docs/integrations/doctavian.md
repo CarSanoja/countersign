@@ -1,6 +1,31 @@
 # Doctavian — Generate It Right. Sign It Tight.
 
-## Status: authenticated, uploading, blocked in their generator
+## Status: working, with one operational caveat
+
+Generation succeeds. Verified live: `documents-generated: 1.0`, document urn
+`47a142c6-5aea-48c2-a6c1-b1efbed70235`.
+
+**Two defects took a day to find, and neither is in the API reference:**
+
+The client's paths were missing the `/v1` prefix, so every call landed on a route
+that does not exist. A missing route is not authenticated, so the gateway answered
+`ApiKeyNotFound` — which reads as a credential problem and is not one.
+
+The data payload needs a root `data` object with every collection as a **list**,
+even when it holds a single record, because template elements iterate. A flat
+mapping uploads happily and returns 201, then fails at generation with
+`TEMPLATE_READ_FAILED` — an error that names the template when the fault is in the
+data. Their engineering manager confirmed both in one reply.
+
+**The caveat: the bearer is a Microsoft identity token valid for one hour, issued
+interactively from their portal.** There is no programmatic refresh we could find:
+`/v1/common/service/token`, `/public/v1/auth/token` and `/v1/common/client/token`
+return `OperationNotFound`, and `/public/v1/auth/{provider}/token` hangs waiting for
+a browser. So the integration works when a person has just signed in, and stops an
+hour later. For an unattended pipeline that is not viable as it stands; a service
+principal would be.
+
+## Earlier status
 
 Auth is solved. `GET /v1/documents/document/list` returns 200 with the bearer from
 their portal plus the api-key, and both `template/upload` and `data/upload` return
