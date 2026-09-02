@@ -35,6 +35,26 @@ from countersign.tools.doctavian_document import (
 from countersign.tools.doctavian_envelope import DoctavianApiError, first_uploaded_id
 
 
+def as_doctavian_data(data: dict[str, Any]) -> dict[str, Any]:
+    """Shape a flat mapping into what the generator actually reads.
+
+    Two things the API reference does not say and their support did: the payload
+    needs a root `data` object, and every object under it must be a list even
+    when it holds one record — the engine treats each as a collection because
+    the template elements iterate. A flat mapping uploads fine and returns 201,
+    then fails at generation with TEMPLATE_READ_FAILED, which reads like a
+    problem with the template and is not.
+    """
+    if set(data) == {"data"}:
+        return data
+    return {
+        "data": {
+            key: value if isinstance(value, list) else [value]
+            for key, value in data.items()
+        }
+    }
+
+
 async def save_document(
     client: httpx.AsyncClient,
     credentials: DoctavianCredentials,
@@ -92,7 +112,7 @@ async def run_generation(
             DATA_UPLOAD_PATH,
             STORAGE_DATA,
             data_filename(request.document_name),
-            json.dumps(data).encode("utf-8"),
+            json.dumps(as_doctavian_data(data)).encode("utf-8"),
             "data upload",
         )
         data_urn = first_uploaded_id(staged, "data upload")

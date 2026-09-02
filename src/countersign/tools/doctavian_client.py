@@ -24,9 +24,9 @@ ENV_API_KEY: Final[str] = "DOCTAVIAN_API_KEY"
 ENV_ACCESS_TOKEN: Final[str] = "DOCTAVIAN_ACCESS_TOKEN"
 ENV_ACCESS_TOKEN_FALLBACK: Final[str] = "DOCTAVIAN_SERVICE_TOKEN"
 
-TEMPLATE_UPLOAD_PATH: Final[str] = "/documents/template/upload"
-DATA_UPLOAD_PATH: Final[str] = "/documents/data/upload"
-GENERATE_PATH: Final[str] = "/documents/document/generate"
+TEMPLATE_UPLOAD_PATH: Final[str] = "/v1/documents/template/upload"
+DATA_UPLOAD_PATH: Final[str] = "/v1/documents/data/upload"
+GENERATE_PATH: Final[str] = "/v1/documents/document/generate"
 LIST_PATH: Final[str] = "/documents/document/list"
 
 STORAGE_TEMPLATE: Final[str] = "document-template"
