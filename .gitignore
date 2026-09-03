@@ -12,5 +12,9 @@ __pycache__/
 .gcloud/
 docs/CLAVES.md
 
+# material de presentación — se queda en local
+docs/deck/
+
 # sistema
 .DS_Store
+demo/out/
