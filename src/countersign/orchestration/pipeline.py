@@ -20,6 +20,8 @@ each naming the run being quoted. Reuse is a choice this pipeline takes on the
 record, never a duplicate silently avoided.
 """
 
+from collections.abc import Callable
+
 from autocurricula.schemas.common import utc_now
 
 from countersign.fleet.roster import ENVELOPE_PREPARER_ID
@@ -36,11 +38,16 @@ from countersign.orchestration.stage_output import (
     run_risk,
 )
 from countersign.orchestration.stage_persist import VENDOR_TOOL, run_persistence
-from countersign.orchestration.stages import Stage, skipped
+from countersign.orchestration.stages import Stage, StageOutcome, skipped
 from countersign.orchestration.state import RunState
 from countersign.orchestration.trace import RunTrace
 from countersign.schemas.verdict import Verdict
 from countersign.tools.xano import xano_persist_vendor
+
+StageObserver = Callable[[StageOutcome], None]
+"""Called as each stage lands, so a caller can show progress while the run is
+still going. Observation only: it cannot alter the run, and a run without one
+behaves identically."""
 
 RUN_ID_PREFIX = "countersign"
 
@@ -64,6 +71,7 @@ async def run_assessment(
     ports: AssessmentPorts | None = None,
     sink: TraceSink | None = None,
     reuse: bool = True,
+    on_stage: StageObserver | None = None,
 ) -> AssessmentResult:
     """Assess one document end to end and return the verdict, the trace and the gaps.
 
@@ -78,6 +86,8 @@ async def run_assessment(
         config: what the document cannot say, such as the template and the signer.
         ports: the six seams, live where not overridden.
         sink: where the trace is persisted; Xano when not overridden.
+        on_stage: called with each stage outcome as it lands, for callers that
+            need to show progress rather than wait for the whole run.
         reuse: answer from an assessment already on file for these exact bytes
             rather than assessing them again. Off means the world is re-checked
             on the same content, which is a caller's decision and not a default,
@@ -104,24 +114,36 @@ async def run_assessment(
     key = content_key(state.document_ref)
     prior = await previous_run(key) if reuse and key else None
     if prior is None:
-        await _assess(state, key)
+        seen = await _assess(state, key, on_stage)
     else:
         _quote(state, prior)
+        seen = _emit(state, 0, on_stage)
     await run_persistence(state, sink if sink is not None else XanoTraceSink())
+    _emit(state, seen, on_stage)
     return _result(state, key, prior)
 
 
-async def _assess(state: RunState, key: str) -> None:
-    """Spend the providers, then leave the content key behind for the next run."""
-    await run_ingest(state)
-    await run_identity(state)
-    await run_domain(state)
-    await run_risk(state)
-    await run_generation(state)
-    await run_delivery(state)
+def _emit(state: RunState, seen: int, on_stage: StageObserver | None) -> int:
+    """Hand the observer every outcome recorded since it last looked."""
+    if on_stage is not None:
+        for outcome in state.outcomes[seen:]:
+            on_stage(outcome)
+    return len(state.outcomes)
+
+
+async def _assess(state: RunState, key: str, on_stage: StageObserver | None = None) -> int:
+    """Spend the providers, then leave the content key behind for the next run.
+
+    Returns how many outcomes the observer has already been shown.
+    """
+    seen = 0
+    for stage in (run_ingest, run_identity, run_domain, run_risk, run_generation, run_delivery):
+        await stage(state)
+        seen = _emit(state, seen, on_stage)
     verdict = state.verdict
     if key and verdict is not None:
         await _record_key(state, key, verdict)
+    return seen
 
 
 async def _record_key(state: RunState, key: str, verdict: Verdict) -> None:
